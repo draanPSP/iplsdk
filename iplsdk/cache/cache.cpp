@@ -21,7 +21,7 @@ namespace {
 		asm("mtc0 %0, $28\n mtc0 %1, $29\n" ::"r" (lo), "r" (hi));
 	}
 
-	inline void sync() {
+	inline void _sync() {
 		asm("sync\n");
 	}
 }
@@ -34,7 +34,7 @@ void iplKernelDcacheWritebackInvalidateAll() {
 		__builtin_allegrex_cache(0x14, i);
 	}
 
-	sync();
+	_sync();
 }
 
 void iplKernelIcacheInvalidateAll() {

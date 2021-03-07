@@ -96,17 +96,17 @@ enum class IoSpi : u8 {
 	SPI5
 };
 
-const auto iplSysregSpiClkEnable = regEnableBit<REG_CLK_ENABLE, ClkSpi>;
-const auto iplSysregSpiClkDisable = regDisableBit<REG_CLK_ENABLE, ClkSpi>;
+constexpr inline auto iplSysregSpiClkEnable = regEnableBit<REG_CLK_ENABLE, ClkSpi>;
+constexpr inline auto iplSysregSpiClkDisable = regDisableBit<REG_CLK_ENABLE, ClkSpi>;
 
-const auto iplSysregUartClkEnable = regEnableBit<REG_CLK_ENABLE, ClkUart>;
-const auto iplSysregUartClkDisable = regDisableBit<REG_CLK_ENABLE, ClkUart>;
+constexpr inline auto iplSysregUartClkEnable = regEnableBit<REG_CLK_ENABLE, ClkUart>;
+constexpr inline auto iplSysregUartClkDisable = regDisableBit<REG_CLK_ENABLE, ClkUart>;
 
-const auto iplSysregSpiIoEnable = regEnableBit<REG_IO_ENABLE, IoSpi>;
-const auto iplSysregSpiIoDisable = regDisableBit<REG_IO_ENABLE, IoSpi>;
+constexpr inline auto iplSysregSpiIoEnable = regEnableBit<REG_IO_ENABLE, IoSpi>;
+constexpr inline auto iplSysregSpiIoDisable = regDisableBit<REG_IO_ENABLE, IoSpi>;
 
-const auto iplSysregUartIoEnable = regEnableBit<REG_IO_ENABLE, IoUart>;
-const auto iplSysregUartIoDisable = regDisableBit<REG_IO_ENABLE, IoUart>;
+constexpr inline auto iplSysregUartIoEnable = regEnableBit<REG_IO_ENABLE, IoUart>;
+constexpr inline auto iplSysregUartIoDisable = regDisableBit<REG_IO_ENABLE, IoUart>;
 
 enum class ClkRef : u8 {
 	REF0,
@@ -120,8 +120,8 @@ enum class ClkRef : u8 {
 };
 
 inline void iplSysregSpiClkSelect(ClkSpi const clk, ClkRef const ref) {
-	const auto refMask = static_cast<u8>(ClkRef::REF7);
-	const auto clkBits = static_cast<u8>(clk) << 2;
+	auto const refMask = static_cast<u8>(ClkRef::REF7);
+	auto const clkBits = static_cast<u8>(clk) << 2;
 
 	memoryK1(REG_CLK_REF) = memoryK1(REG_CLK_REF) & ~(refMask << clkBits) | (static_cast<u8>(ref) << clkBits);
 }
@@ -163,8 +163,8 @@ enum class GpioIntrMode : u8 {
 	EDGE,
 };
 
-const auto iplSysregGpioIoEnable = regEnableBit<REG_GPIO_ENABLE, GpioPort>;
-const auto iplSysregGpioIoDisable = regDisableBit<REG_GPIO_ENABLE, GpioPort>;
+constexpr inline auto iplSysregGpioIoEnable = regEnableBit<REG_GPIO_ENABLE, GpioPort>;
+constexpr inline auto iplSysregGpioIoDisable = regDisableBit<REG_GPIO_ENABLE, GpioPort>;
 
 inline void iplGpioSetPortMode(GpioPort const port, GpioPortMode const mode) {
 	switch (mode) {
@@ -182,15 +182,16 @@ inline void iplGpioSetPortMode(GpioPort const port, GpioPortMode const mode) {
 			break;
 	}
 
-	if (mode == GpioPortMode::NONE)
+	if (mode == GpioPortMode::NONE) {
 		iplSysregGpioIoDisable(port);
-	else
+	} else {
 		iplSysregGpioIoEnable(port);
+	}
 }
 
-const auto iplGpioPortSet = regSetBit<REG_GPIO_SET, GpioPort>;
-const auto iplGpioPortClear = regSetBit<REG_GPIO_CLEAR, GpioPort>;
-const auto iplGpioAcquireIntr = regSetBit<REG_GPIO_INTR_ACK, GpioPort>;
+constexpr inline auto iplGpioPortSet = regSetBit<REG_GPIO_SET, GpioPort>;
+constexpr inline auto iplGpioPortClear = regSetBit<REG_GPIO_CLEAR, GpioPort>;
+constexpr inline auto iplGpioAcquireIntr = regSetBit<REG_GPIO_INTR_ACK, GpioPort>;
 
 inline bool iplGpioQueryIntr(GpioPort const port) {
 	const u32 mask = (1 << static_cast<u8>(port));
@@ -233,20 +234,23 @@ inline void iplGpioSetIntrMode(GpioPort const port, GpioIntrMode const mode) {
 			break;
 	}
 
-	if (detectLevel)
+	if (detectLevel) {
 		regEnableBit<REG_GPIO_INTR_LEVEL_DETECT>(port);
-	else
+	} else {
 		regDisableBit<REG_GPIO_INTR_LEVEL_DETECT>(port);
+	}
 
-	if (levelHi)
+	if (levelHi) {
 		regEnableBit<REG_GPIO_INTR_LEVEL_HI>(port);
-	else
+	} else {
 		regDisableBit<REG_GPIO_INTR_LEVEL_HI>(port);
+	}
 
-	if (levelLo)
+	if (levelLo) {
 		regEnableBit<REG_GPIO_INTR_LEVEL_LO>(port);
-	else
+	} else {
 		regDisableBit<REG_GPIO_INTR_LEVEL_LO>(port);
+	}
 
 	iplGpioAcquireIntr(port);
 }

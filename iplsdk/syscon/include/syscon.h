@@ -2,7 +2,6 @@
 #define IPLSDK_SYSCON
 
 #include <psptypes.h>
-#include <cstdint>
 
 enum class SysconCmd : u8 {
 	NOP = 0x0,
@@ -26,22 +25,51 @@ enum class SysconLed : u8 {
 	BT
 };
 
+constexpr inline u32 TX_CMD = 0;
+constexpr inline u32 TX_LEN = 1;
+
+constexpr u32 TX_DATA(u32 i) { return 2 + i; };
+
+constexpr inline u32 RX_STATUS = 0;
+constexpr inline u32 RX_LEN = 1;
+constexpr inline u32 RX_RESPONSE = 2;
+
+constexpr u32 RX_DATA(u32 i) { return 3 + i; };
+
 void iplSysconInit();
+u32 iplSysconGetBaryonVersion();
 
-s32 iplSysconCtrlLED(SysconLed const led, bool enable);
+s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx);
 
-s32 iplSysconCmdNoParam(SysconCmd const cmd);
+s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd);
+s32 _iplSysconCommonWrite(u32 val, SysconCmd const cmd, u32 const size);
+
+s32 _iplSysconCmdNoParam(SysconCmd const cmd);
 
 inline s32 iplSysconNop() {
-	return iplSysconCmdNoParam(SysconCmd::NOP);
+	return _iplSysconCmdNoParam(SysconCmd::NOP);
+}
+
+inline s32 iplSysconCtrlHRPower(bool const enable) {
+	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_HR_POWER, 3);
 }
 
 inline s32 iplSysconPowerStandby() {
-	return iplSysconCmdNoParam(SysconCmd::POWER_STANDBY);
+	return _iplSysconCmdNoParam(SysconCmd::POWER_STANDBY);
 }
 
 inline s32 iplSysconPowerSuspend() {
-	return iplSysconCmdNoParam(SysconCmd::POWER_SUSPEND);
+	return _iplSysconCmdNoParam(SysconCmd::POWER_SUSPEND);
+}
+
+s32 iplSysconCtrlLED(SysconLed const led, bool const enable);
+
+inline s32 iplSysconCtrlMsPower(bool const enable) {
+	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_MS_POWER, 3);
+}
+
+inline s32 iplSysconCtrlWlanPower(bool const enable) {
+	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_WLAN_POWER, 3);
 }
 
 #endif //IPLSDK_SYSCON

@@ -5,25 +5,15 @@
 u32 g_baryonVersion = 0;
 
 namespace {
-	constexpr u32 TX_CMD = 0;
-	constexpr u32 TX_LEN = 1;
-
-	constexpr u32 TX_DATA(u32 i) { return 2 + i; };
-
-	constexpr u32 RX_STATUS = 0;
-	constexpr u32 RX_LEN = 1;
-	constexpr u32 RX_RESPONSE = 2;
-
-	constexpr u32 RX_DATA(u32 i) { return 3 + i; };
-
 	s32 _iplSysconPacketStart(u8 const *tx) {
 		vu32 dummy;
 
 		dummy = iplGpioPortRead();
 		iplGpioPortClear(GpioPort::SYSCON_REQUEST);
 
-		while ((memoryK1(0x1E58000C) & 0x4) != 0)
+		while ((memoryK1(0x1E58000C) & 0x4) != 0) {
 			dummy = memoryK1(0x1E580008);
+		}
 
 		dummy = memoryK1(0x1E58000C);
 		memoryK1(0x1E580020) = 3;
@@ -39,7 +29,7 @@ namespace {
 		return 0;
 	}
 
-	void sdkSysconWaitForResponse() {
+	void _sdkSysconWaitForResponse() {
 		while (!iplGpioQueryIntr(GpioPort::TACHYON_SPI_CS));
 
 		iplGpioAcquireIntr(GpioPort::TACHYON_SPI_CS);
@@ -52,8 +42,9 @@ namespace {
 			rx[RX_STATUS] = -1;
 			rx[RX_LEN] = 0;
 
-			for (u32 i = 0; i < 16; i++)
-					asm("\n");
+			for (u32 i = 0; i < 16; i++) {
+				asm("\n");
+			}
 
 			ret = -1;
 		}
@@ -67,12 +58,14 @@ namespace {
 		}
 
 		for (u32 i = 0; i < 16; i += 2) {
-			if ((memoryK1(0x1E58000C) & 4) == 0)
+			if ((memoryK1(0x1E58000C) & 4) == 0) {
 				break;
+			}
 
 			u16 v = memoryK1(0x1E580008) & 0xFFFF;
-			if (i == 0)
+			if (i == 0) {
 				ret = v >> 8;
+			}
 
 			rx[i + 0] = v >> 8;
 			rx[i + 1] = v;
@@ -84,15 +77,18 @@ namespace {
 
 		if (ret >= 0) {
 			u32 hash = 0;
-			if (rx[RX_LEN] < 3) /* Received data is too short */
+			if (rx[RX_LEN] < 3) { /* Received data is too short */
 				ret = -2;
-			else if (rx[RX_LEN] < 16) {
-				for (u32 i = 0; i < rx[RX_LEN]; i++)
+			} else if (rx[RX_LEN] < 16) {
+				for (u32 i = 0; i < rx[RX_LEN]; i++) {
 					hash = (hash + rx[i]) & 0xFF;
-				if ((rx[rx[RX_LEN]] ^ (~hash & 0xFF)) != 0) /* Wrong hash */
+				}
+				if ((rx[rx[RX_LEN]] ^ (~hash & 0xFF)) != 0) { /* Wrong hash */
 					ret = -2;
-			} else
+				}
+			} else {
 				ret = -2;
+			}
 		}
 
 		if (ret >= 0) {
@@ -106,70 +102,77 @@ namespace {
 		return ret;
 	}
 
-	s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx) {
-		s32 ret;
-
-		do {
-			u8 hash = 0;
-			u32 i;
-
-			for (i = 0; i < tx[TX_LEN]; i++)
-				hash += tx[i];
-
-			tx[i] = ~hash;
-
-			for (i++; i < 16; i++)
-				tx[i] = 0xFF;
-
-			for (i = 0; i < 16; i++)
-				rx[i] = 0xFF;
-
-			_iplSysconPacketStart(tx);
-
-			sdkSysconWaitForResponse();
-
-			ret = _iplSysconPacketEnd(rx);
-		} while (ret == 0x80 || ret == 0x81);
-
-		return ret;
+	void _iplSysconGetBaryonVersion(u32 *baryonVersionPtr) {
+		_iplSysconCommonRead(reinterpret_cast<s32*>(baryonVersionPtr), SysconCmd::GET_BARYON);
 	}
+}
 
-	s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd) {
-		u8 tx[0x10], rx[0x10];
+u32 iplSysconGetBaryonVersion() {
+	return g_baryonVersion;
+}
 
-		s32 buf[4];
+s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd) {
+	u8 tx[0x10], rx[0x10];
 
-		tx[TX_LEN] = 2;
-		tx[TX_CMD] = static_cast<u8>(cmd);
+	s32 buf[4];
 
-		sdkSysconTransmitReceive(tx, rx);
+	tx[TX_LEN] = 2;
+	tx[TX_CMD] = static_cast<u8>(cmd);
 
-		buf[0] = 0;
+	sdkSysconTransmitReceive(tx, rx);
 
-		sdk_memcpy(buf, &rx[RX_DATA(0)], rx[RX_LEN] - 3);
+	buf[0] = 0;
 
-		*ptr = buf[0];
+	sdk_memcpy(buf, &rx[RX_DATA(0)], rx[RX_LEN] - 3);
 
-		return 0;
-	}
+	*ptr = buf[0];
 
-	s32 _iplSysconCommonWrite(u32 val, SysconCmd const cmd, u32 size) {
-		u8 tx_buf[0x10], rx_buf[0x10];
+	return 0;
+}
 
-		tx_buf[TX_CMD] = static_cast<u8>(cmd);
-		tx_buf[TX_LEN] = size;
+s32 _iplSysconCommonWrite(u32 val, SysconCmd const cmd, u32 const size) {
+	u8 tx_buf[0x10], rx_buf[0x10];
 
-		tx_buf[TX_DATA(1)] = (val >> 8);
-		tx_buf[TX_DATA(2)] = (val >> 16);
-		tx_buf[TX_DATA(3)] = (val >> 24);
-		tx_buf[TX_DATA(0)] = val;
+	tx_buf[TX_CMD] = static_cast<u8>(cmd);
+	tx_buf[TX_LEN] = size;
 
-		return sdkSysconTransmitReceive(tx_buf, rx_buf);
-	}
+	tx_buf[TX_DATA(1)] = (val >> 8);
+	tx_buf[TX_DATA(2)] = (val >> 16);
+	tx_buf[TX_DATA(3)] = (val >> 24);
+	tx_buf[TX_DATA(0)] = val;
 
-	void _iplSysconGetBaryonVersion(u32 *baryonVersion) {
-		_iplSysconCommonRead(reinterpret_cast<s32 *>(baryonVersion), SysconCmd::GET_BARYON);
-	}
+	return sdkSysconTransmitReceive(tx_buf, rx_buf);
+}
+
+s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx) {
+	s32 ret;
+
+	do {
+		u8 hash = 0;
+		u32 i;
+
+		for (i = 0; i < tx[TX_LEN]; i++) {
+			hash += tx[i];
+		}
+
+		tx[i] = ~hash;
+
+		for (i++; i < 16; i++) {
+			tx[i] = 0xFF;
+		}
+
+		for (i = 0; i < 16; i++) {
+			rx[i] = 0xFF;
+		}
+
+		_iplSysconPacketStart(tx);
+
+		_sdkSysconWaitForResponse();
+
+		ret = _iplSysconPacketEnd(rx);
+	} while (ret == 0x80 || ret == 0x81); //syscon busy?
+
+	return ret;
 }
 
 void iplSysconInit() {
@@ -192,7 +195,7 @@ void iplSysconInit() {
 	_iplSysconGetBaryonVersion(&g_baryonVersion);
 }
 
-s32 iplSysconCtrlLED(SysconLed const led, bool enable) {
+s32 iplSysconCtrlLED(SysconLed const led, bool const enable) {
 	u8 ledMask, setMask;
 	switch (led) {
 		case SysconLed::WLAN:
@@ -213,13 +216,14 @@ s32 iplSysconCtrlLED(SysconLed const led, bool enable) {
 	if (enable) {
 		u32 ver = (g_baryonVersion >> 16) & 0xF0;
 		setMask = 0x10;
-		if (ver != 0 && ver != 0x10)
+		if (ver != 0 && ver != 0x10) {
 			setMask = 1;
+		}
 	}
 
 	return _iplSysconCommonWrite(ledMask | setMask, SysconCmd::CTRL_LED, 3);
 }
 
-s32 iplSysconCmdNoParam(SysconCmd const cmd) {
+s32 _iplSysconCmdNoParam(SysconCmd const cmd) {
 	return _iplSysconCommonWrite(0, cmd, 2);
 }
