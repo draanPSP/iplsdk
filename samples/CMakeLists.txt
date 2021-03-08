@@ -1,2 +1,3 @@
 add_subdirectory(flash_led)
 add_subdirectory(controller)
+add_subdirectory(hp_remote_serial)

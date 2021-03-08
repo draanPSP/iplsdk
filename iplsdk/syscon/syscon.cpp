@@ -130,7 +130,7 @@ s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd) {
 	return 0;
 }
 
-s32 _iplSysconCommonWrite(u32 val, SysconCmd const cmd, u32 const size) {
+s32 _iplSysconCommonWrite(u32 const val, SysconCmd const cmd, u32 const size) {
 	u8 tx_buf[0x10], rx_buf[0x10];
 
 	tx_buf[TX_CMD] = static_cast<u8>(cmd);

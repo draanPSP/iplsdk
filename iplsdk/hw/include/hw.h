@@ -12,6 +12,8 @@ enum class MemRegions : u32 {
 	K3 = 0xE0000000    //kernel cached
 };
 
+constexpr inline u32 REG_BUS_CLK_ENABLE = 0x1C100050;
+
 constexpr inline u32 REG_CLK_ENABLE = 0x1C100058;
 
 constexpr inline u32 REG_CLK_REF = 0x1C100064;
@@ -29,6 +31,12 @@ constexpr inline u32 REG_GPIO_INTR_LEVEL_LO = 0x1E240018;
 constexpr inline u32 REG_GPIO_INTR_VALUE = 0x1E240020;
 constexpr inline u32 REG_GPIO_INTR_ACK = 0x1E240024;
 constexpr inline u32 REG_GPIO_INPUT = 0x1E240040;
+
+constexpr inline u32 UART_IO_BASE = 0x1E400000;
+
+constexpr inline u32 DBG_UART4_BASE = UART_IO_BASE + 3*0x40000;
+constexpr inline u32 HP_REMOTE_BASE = UART_IO_BASE + 4*0x40000;
+constexpr inline u32 IRDA_BASE = UART_IO_BASE + 5*0x40000;
 
 
 constexpr u32 physicalAddr(u32 const loc) {

@@ -28,13 +28,13 @@ enum class SysconLed : u8 {
 constexpr inline u32 TX_CMD = 0;
 constexpr inline u32 TX_LEN = 1;
 
-constexpr u32 TX_DATA(u32 i) { return 2 + i; };
+constexpr u32 TX_DATA(u32 const i) { return 2 + i; };
 
 constexpr inline u32 RX_STATUS = 0;
 constexpr inline u32 RX_LEN = 1;
 constexpr inline u32 RX_RESPONSE = 2;
 
-constexpr u32 RX_DATA(u32 i) { return 3 + i; };
+constexpr u32 RX_DATA(u32 const i) { return 3 + i; };
 
 void iplSysconInit();
 u32 iplSysconGetBaryonVersion();
@@ -42,7 +42,7 @@ u32 iplSysconGetBaryonVersion();
 s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx);
 
 s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd);
-s32 _iplSysconCommonWrite(u32 val, SysconCmd const cmd, u32 const size);
+s32 _iplSysconCommonWrite(u32 const val, SysconCmd const cmd, u32 const size);
 
 s32 _iplSysconCmdNoParam(SysconCmd const cmd);
 

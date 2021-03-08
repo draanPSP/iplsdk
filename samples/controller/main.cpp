@@ -1,4 +1,3 @@
-#include <cache.h>
 #include <lowio.h>
 #include <syscon.h>
 #include <ctrl.h>

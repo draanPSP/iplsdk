@@ -4,6 +4,34 @@
 #include <psptypes.h>
 #include <hw.h>
 
+enum class BusClk : u8 {
+	ME = 0,
+	AWA,
+	AWB,
+	EDRAM,
+	DMACPLUS,
+	DMAC0,
+	DMAC1,
+	KIRK,
+	ATA,
+	USB,
+	MSIF0,
+	MSIF1,
+	EMCDDR,
+	EMCSM,
+	APB,
+	AUDIO0,
+	AUDIO1
+};
+
+inline void sceSysregApbBusClockEnable() {
+	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
+}
+
+inline void sceSysregApbBusClockDisable() {
+	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
+}
+
 enum class Clk2 : u8 {
 	SPI0 = 0,
 	SPI1,
@@ -42,12 +70,12 @@ enum class ClkSpi : u8 {
 };
 
 enum class ClkUart : u8 {
-	UARTO = static_cast<u8>(Clk2::UART0),
+	UART0 = static_cast<u8>(Clk2::UART0),
 	UART1,
 	UART2,
-	UART3,
+	DBG_UART4,	//available as pads on the motherboard
 	HP_REMOTE,
-	UART5
+	IRDA
 };
 
 enum class Io : u8 {
@@ -82,9 +110,9 @@ enum class IoUart : u8 {
 	UART0 = static_cast<u8>(Io::UART0),
 	UART1,
 	UART2,
-	UART3,
+	DBG_UART4,
 	HP_REMOTE,
-	UART5
+	IRDA
 };
 
 enum class IoSpi : u8 {
