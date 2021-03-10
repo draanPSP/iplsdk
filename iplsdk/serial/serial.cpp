@@ -8,19 +8,19 @@ namespace {
 
 	enum class Status : u8 {
 		UNK = 0x8,
-		RX = 0x10,
-		TX = 0x20,
+		RX_EMPTY = 0x10,
+		TX_FULL = 0x20,
 		BUSY = 0x80
 	};
 }
 
-constexpr inline u32 RX_TX_OFFSET = 0;
+constexpr inline u32 FIFO_OFFSET = 0;
 constexpr inline u32 STATUS_OFFSET = 0x20;
 constexpr inline u32 BPS_HIGH_OFFSET = 0x24;
 constexpr inline u32 BPS_LOW_OFFSET = 0x28;
 constexpr inline u32 UNK_2C_OFFSET = 0x2C;
 constexpr inline u32 UNK_30_OFFSET = 0x30;
-constexpr inline u32 FIFO_OFFSET = 0x34;
+constexpr inline u32 FIFO_CONFIG_OFFSET = 0x34;
 constexpr inline u32 UNK_44_OFFSET = 0x4;
 
 constexpr inline u32 SPEED = 115200;
@@ -43,23 +43,23 @@ inline void setFIFO(u32 const fifo) {
 		memoryK1(UB + UNK_2C_OFFSET) |= 0x10;
 		switch (fifo) {
 			case 8:
-				memoryK1(UB + FIFO_OFFSET) = 9;
+				memoryK1(UB + FIFO_CONFIG_OFFSET) = 9;
 				break;
 			case 16:
-				memoryK1(UB + FIFO_OFFSET) = 18;
+				memoryK1(UB + FIFO_CONFIG_OFFSET) = 18;
 				break;
 			case 24:
-				memoryK1(UB + FIFO_OFFSET) = 27;
+				memoryK1(UB + FIFO_CONFIG_OFFSET) = 27;
 				break;
 			case 28:
-				memoryK1(UB + FIFO_OFFSET) = 36;
+				memoryK1(UB + FIFO_CONFIG_OFFSET) = 36;
 				break;
 			default:
-				memoryK1(UB + FIFO_OFFSET) = 0;
+				memoryK1(UB + FIFO_CONFIG_OFFSET) = 0;
 				break;
 		}
 	} else {
-		memoryK1(UB + FIFO_OFFSET) &= 0xFFFFFFEF;
+		memoryK1(UB + FIFO_CONFIG_OFFSET) &= 0xFFFFFFEF;
 	}
 }
 
@@ -69,9 +69,9 @@ constexpr inline auto uartIrdaSetFIFO = setFIFO<IRDA_BASE>;
 
 template<u32 UB>
 inline void uartSendChar(u8 const c) {
-	while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::TX)) != 0);
+	while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::TX_FULL)) != 0);
 
-	memoryK1(UB + RX_TX_OFFSET) = c;
+	memoryK1(UB + FIFO_OFFSET) = c;
 }
 
 constexpr inline auto iplKernelUart4SendChar = uartSendChar<DBG_UART4_BASE>;
@@ -125,9 +125,9 @@ void sdkUartIrdaInit() {
 template<u32 UB>
 inline void uartRecvBytes(u8 *buff, u32 const count) {
 	for (u32 i = 0; i < count; i++) {
-		while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::RX)) != 0);
+		while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::RX_EMPTY)) == 0);
 
-		buff[i] = memoryK1(UB + RX_TX_OFFSET);
+		buff[i] = memoryK1(UB + FIFO_OFFSET);
 	}
 }
 
@@ -137,7 +137,7 @@ inline u32 uartWaitBusy() {
 		while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::BUSY)) != 0);
 	} while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::UNK)) != 0);
 
-	u32 const result = memoryK1(UB + FIFO_OFFSET);
+	u32 const result = memoryK1(UB + FIFO_CONFIG_OFFSET);
 
 	return result;
 }
