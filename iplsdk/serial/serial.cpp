@@ -1,3 +1,4 @@
+#include <serial.h>
 #include <lowio.h>
 #include <type_traits>
 
@@ -72,6 +73,8 @@ inline void uartSendChar(u8 const c) {
 	while ((memoryK1(UB + STATUS_OFFSET) & static_cast<u8>(Status::TX)) != 0);
 
 	memoryK1(UB + RX_TX_OFFSET) = c;
+
+	sdkWait(100);
 }
 
 constexpr inline auto iplKernelUart4SendChar = uartSendChar<DBG_UART4_BASE>;
@@ -79,7 +82,7 @@ constexpr inline auto sdkUartHpRemoteSendChar = uartSendChar<HP_REMOTE_BASE>;
 constexpr inline auto sdkUartIrdaSendChar = uartSendChar<IRDA_BASE>;
 
 void iplKernelUart4Init() {
-	sceSysregApbBusClockEnable();
+	iplSysregApbBusClockEnable();
 	iplSysregUartClkEnable(ClkUart::DBG_UART4);
 	iplSysregUartIoEnable(IoUart::DBG_UART4);
 
@@ -94,7 +97,7 @@ void iplKernelUart4Init() {
 }
 
 void sdkUartHpRemoteInit() {
-	sceSysregApbBusClockEnable();
+	iplSysregApbBusClockEnable();
 	iplSysregUartClkEnable(ClkUart::HP_REMOTE);
 	iplSysregUartIoEnable(IoUart::HP_REMOTE);
 
@@ -109,7 +112,7 @@ void sdkUartHpRemoteInit() {
 }
 
 void sdkUartIrdaInit() {
-	sceSysregApbBusClockEnable();
+	iplSysregApbBusClockEnable();
 	iplSysregUartClkEnable(ClkUart::IRDA);
 	iplSysregUartIoEnable(IoUart::IRDA);
 
@@ -187,10 +190,8 @@ void sdkKernelUartIrdaEnd() {
 	g_putcharFunc = nullptr;
 }
 
-extern "C" {
 void _putchar(char c) {
 	if (g_putcharFunc) {
 		g_putcharFunc(c);
 	}
-}
 }

@@ -15,4 +15,4 @@ add_custom_command(
         COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/../convert_to_tm.py --infile controller.bin --outfile controller_tm.bin
 )
 
-target_link_options(controller PRIVATE -nostartfiles -nostdlib -nolibc -T${CMAKE_CURRENT_SOURCE_DIR}/../linker.x)
+target_link_options(controller PRIVATE -nostdlib -T${CMAKE_CURRENT_SOURCE_DIR}/../linker.x)

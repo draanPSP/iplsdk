@@ -8,6 +8,8 @@ enum class SysconCmd : u8 {
 	GET_BARYON = 0x1,
 	GET_KERNEL_DIGITAL_KEY = 0x7,
 
+	GET_WAKE_UP_FACTOR = 0xE,
+
 	CTRL_HR_POWER = 0x34,
 	POWER_STANDBY = 0x35,
 	POWER_SUSPEND = 0x36,
@@ -41,13 +43,17 @@ u32 iplSysconGetBaryonVersion();
 
 s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx);
 
-s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd);
+s32 _iplSysconCommonRead(u32 *ptr, SysconCmd const cmd);
 s32 _iplSysconCommonWrite(u32 const val, SysconCmd const cmd, u32 const size);
 
 s32 _iplSysconCmdNoParam(SysconCmd const cmd);
 
 inline s32 iplSysconNop() {
 	return _iplSysconCmdNoParam(SysconCmd::NOP);
+}
+
+inline s32 iplSysconGetWakeUpFactor(u32 *factorPtr) {
+	return _iplSysconCommonRead(factorPtr, SysconCmd::GET_WAKE_UP_FACTOR);
 }
 
 inline s32 iplSysconCtrlHRPower(bool const enable) {

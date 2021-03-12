@@ -4,6 +4,28 @@
 #include <psptypes.h>
 #include <hw.h>
 
+enum class Reset : u8 {
+	TOP = 0,
+	SC,
+	ME,
+	AW,
+	VME,
+	AVC,
+	USB,
+	ATA,
+	MSIF0,
+	MSIF1,
+	KIRK
+};
+
+enum class ResetMs : u8 {
+	IF0 = static_cast<u8>(Reset::MSIF0),
+	IF1
+};
+
+constexpr inline auto iplSysregMsifResetEnable = regEnableBit<REG_RESET_ENABLE, ResetMs>;
+constexpr inline auto iplSysregMsifResetDisable = regDisableBit<REG_RESET_ENABLE, ResetMs>;
+
 enum class BusClk : u8 {
 	ME = 0,
 	AWA,
@@ -24,13 +46,36 @@ enum class BusClk : u8 {
 	AUDIO1
 };
 
-inline void sceSysregApbBusClockEnable() {
+enum class BusClkMs : u8 {
+	IF0 = static_cast<u8>(BusClk::MSIF0),
+	IF1
+};
+
+constexpr inline auto iplSysregMsifBusClockEnable = regEnableBit<REG_BUS_CLK_ENABLE, BusClkMs>;
+constexpr inline auto iplSysregMsifBusClockDisable = regDisableBit<REG_BUS_CLK_ENABLE, BusClkMs>;
+
+inline void iplSysregApbBusClockEnable() {
 	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
 }
 
-inline void sceSysregApbBusClockDisable() {
+inline void iplSysregApbBusClockDisable() {
 	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
 }
+
+enum class Clk1 : u8 {
+	ATA = 0,
+	USB = 4,
+	MSIF0 = 8,
+	MSIF1
+};
+
+enum class ClkMs : u8 {
+	IF0 = static_cast<u8>(Clk1::MSIF0),
+	IF1
+};
+
+constexpr inline auto iplSysregMsifClkEnable = regEnableBit<REG_CLK1_ENABLE, ClkMs>;
+constexpr inline auto iplSysregMsifClkDisable = regDisableBit<REG_CLK1_ENABLE, ClkMs>;
 
 enum class Clk2 : u8 {
 	SPI0 = 0,
@@ -106,6 +151,11 @@ enum class Io : u8 {
 	SPI5
 };
 
+enum class IoMs : u8 {
+	IF0 = static_cast<u8>(Io::MSIF0),
+	IF1
+};
+
 enum class IoUart : u8 {
 	UART0 = static_cast<u8>(Io::UART0),
 	UART1,
@@ -124,11 +174,14 @@ enum class IoSpi : u8 {
 	SPI5
 };
 
-constexpr inline auto iplSysregSpiClkEnable = regEnableBit<REG_CLK_ENABLE, ClkSpi>;
-constexpr inline auto iplSysregSpiClkDisable = regDisableBit<REG_CLK_ENABLE, ClkSpi>;
+constexpr inline auto iplSysregSpiClkEnable = regEnableBit<REG_CLK2_ENABLE, ClkSpi>;
+constexpr inline auto iplSysregSpiClkDisable = regDisableBit<REG_CLK2_ENABLE, ClkSpi>;
 
-constexpr inline auto iplSysregUartClkEnable = regEnableBit<REG_CLK_ENABLE, ClkUart>;
-constexpr inline auto iplSysregUartClkDisable = regDisableBit<REG_CLK_ENABLE, ClkUart>;
+constexpr inline auto iplSysregUartClkEnable = regEnableBit<REG_CLK2_ENABLE, ClkUart>;
+constexpr inline auto iplSysregUartClkDisable = regDisableBit<REG_CLK2_ENABLE, ClkUart>;
+
+constexpr inline auto iplSysregMsifIoEnable = regEnableBit<REG_IO_ENABLE, IoMs>;
+constexpr inline auto iplSysregMsifIoDisable = regDisableBit<REG_IO_ENABLE, IoMs>;
 
 constexpr inline auto iplSysregSpiIoEnable = regEnableBit<REG_IO_ENABLE, IoSpi>;
 constexpr inline auto iplSysregSpiIoDisable = regDisableBit<REG_IO_ENABLE, IoSpi>;
@@ -155,11 +208,11 @@ inline void iplSysregSpiClkSelect(ClkSpi const clk, ClkRef const ref) {
 }
 
 inline void iplSysregGpioEnable() {
-	return regEnableBit<REG_CLK_ENABLE>(static_cast<u8>(Clk2::GPIO));
+	return regEnableBit<REG_CLK2_ENABLE>(static_cast<u8>(Clk2::GPIO));
 }
 
 inline void iplSysregGpioDisable() {
-	return regDisableBit<REG_CLK_ENABLE>(static_cast<u8>(Clk2::GPIO));
+	return regDisableBit<REG_CLK2_ENABLE>(static_cast<u8>(Clk2::GPIO));
 }
 
 enum class GpioPort : u8 {

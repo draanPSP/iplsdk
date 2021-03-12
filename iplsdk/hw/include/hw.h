@@ -12,14 +12,20 @@ enum class MemRegions : u32 {
 	K3 = 0xE0000000    //kernel cached
 };
 
+constexpr inline u32 REG_RESET_ENABLE = 0x1C10004C;
 constexpr inline u32 REG_BUS_CLK_ENABLE = 0x1C100050;
-
-constexpr inline u32 REG_CLK_ENABLE = 0x1C100058;
+constexpr inline u32 REG_CLK1_ENABLE = 0x1C100054;
+constexpr inline u32 REG_CLK2_ENABLE = 0x1C100058;
 
 constexpr inline u32 REG_CLK_REF = 0x1C100064;
 
 constexpr inline u32 REG_IO_ENABLE = 0x1C100078;
 constexpr inline u32 REG_GPIO_ENABLE = 0x1C10007C;
+
+constexpr inline u32 REG_MS_CMD = 0x1D200030;
+constexpr inline u32 REG_MS_DATA = 0x1D200034;
+constexpr inline u32 REG_MS_STATUS = 0x1D200038;
+constexpr inline u32 REG_MS_SYS = 0x1D20003C;
 
 constexpr inline u32 REG_GPIO_OUTPUT = 0x1E240000;
 constexpr inline u32 REG_GPIO_VALUE = 0x1E240004;

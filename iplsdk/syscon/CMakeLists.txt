@@ -5,4 +5,4 @@ target_include_directories(syscon PUBLIC include)
 
 target_sources(syscon PRIVATE syscon.cpp)
 
-target_link_libraries(syscon iplsdk::libc iplsdk::hw iplsdk::lowio)
+target_link_libraries(syscon c iplsdk::hw iplsdk::lowio)

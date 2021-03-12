@@ -1,6 +1,6 @@
 #include <syscon.h>
 #include <lowio.h>
-#include <libc.h>
+#include <cstring>
 
 u32 g_baryonVersion = 0;
 
@@ -103,7 +103,7 @@ namespace {
 	}
 
 	void _iplSysconGetBaryonVersion(u32 *baryonVersionPtr) {
-		_iplSysconCommonRead(reinterpret_cast<s32*>(baryonVersionPtr), SysconCmd::GET_BARYON);
+		_iplSysconCommonRead(baryonVersionPtr, SysconCmd::GET_BARYON);
 	}
 }
 
@@ -111,7 +111,7 @@ u32 iplSysconGetBaryonVersion() {
 	return g_baryonVersion;
 }
 
-s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd) {
+s32 _iplSysconCommonRead(u32 *ptr, SysconCmd const cmd) {
 	u8 tx[0x10], rx[0x10];
 
 	s32 buf[4];
@@ -123,7 +123,7 @@ s32 _iplSysconCommonRead(s32 *ptr, SysconCmd const cmd) {
 
 	buf[0] = 0;
 
-	sdk_memcpy(buf, &rx[RX_DATA(0)], rx[RX_LEN] - 3);
+	memcpy(buf, &rx[RX_DATA(0)], rx[RX_LEN] - 3);
 
 	*ptr = buf[0];
 

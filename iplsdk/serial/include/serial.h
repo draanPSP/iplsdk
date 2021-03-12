@@ -1,6 +1,7 @@
 #ifndef IPLSDK_SERIAL
 #define IPLSDK_SERIAL
 
+#include <psptypes.h>
 #include "printf.h"
 
 void iplKernelUart4Init();

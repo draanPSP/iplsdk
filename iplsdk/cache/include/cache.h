@@ -3,6 +3,10 @@
 
 #include <psptypes.h>
 
+inline void sdkSync() {
+	asm("sync\n");
+}
+
 void iplKernelDcacheWritebackInvalidateAll();
 
 void iplKernelIcacheInvalidateAll();
