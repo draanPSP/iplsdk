@@ -12,6 +12,8 @@ enum class MemRegions : u32 {
 	K3 = 0xE0000000    //kernel cached
 };
 
+constexpr inline u32 REG_CHIP_VERSION = 0x1C100040;
+
 constexpr inline u32 REG_RESET_ENABLE = 0x1C10004C;
 constexpr inline u32 REG_BUS_CLK_ENABLE = 0x1C100050;
 constexpr inline u32 REG_CLK1_ENABLE = 0x1C100054;

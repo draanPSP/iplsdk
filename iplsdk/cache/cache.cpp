@@ -18,7 +18,7 @@ namespace {
 	}
 
 	inline void _storeTag(u32 hi, u32 lo) {
-		asm("mtc0 %0, $28\n mtc0 %1, $29\n" ::"r" (lo), "r" (hi));
+		asm("mtc0 %0, $28\n mtc0 %1, $29\n" :: "r" (lo), "r" (hi));
 	}
 }
 

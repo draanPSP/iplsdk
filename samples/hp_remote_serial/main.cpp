@@ -12,6 +12,9 @@ int main() {
 	//Initialize HP Remote Serial
 	sdkUartHpRemoteInit();
 
+	printf("Your PSP's bootrom timestamp is 0x%x\n", sdkGetBootromTimestampFromRom());
+	printf("Your PSP's Tachyon version is 0x%x\n", iplSysregGetTachyonVersion());
+
 	for (u32 i = 0; i < 10; ++i) {
 		printf("Hello world line %d\n", i);
 

@@ -336,6 +336,32 @@ inline void iplGpioSetIntrMode(GpioPort const port, GpioIntrMode const mode) {
 	iplGpioAcquireIntr(port);
 }
 
+inline u32 iplSysregGetTachyonVersion() {
+	u32 const ver = memoryK1(REG_CHIP_VERSION);
+	
+	if (ver & 0xFF000000) {
+		return (ver >> 8);
+	} else {
+		return 0x10;
+	}
+}
+
+//When the ROM is still mapped, the timestamp is available 
+//directly from the end of the binary
+inline u32 sdkGetBootromTimestampFromRom() {
+	return memoryK1(0x1FC00FFC);
+}
+
+//Official IPL saves the timestamp to the COP0 register,
+//from where it can be retrieved after ROM access is lost
+inline u32 sdkGetBootromTimestampFromReg() {
+	u32 tstamp;
+	
+	asm ("cfc0 %0, $17" : "=r" (tstamp));
+	
+	return tstamp;
+}
+
 void sdkWait(u32 usec);
 
 #endif //IPLSDK_LOWIO
