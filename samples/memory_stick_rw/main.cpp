@@ -1,6 +1,6 @@
 #include <syscon.h>
 #include <serial.h>
-#include <tff.h>
+#include <ff.h>
 
 FATFS fs;
 FIL file;
@@ -10,19 +10,43 @@ constexpr inline u32 bootrom_size = 0x1000;
 
 void dump_bootrom() {
 	//Initialize Memory Stick & FAT Filesystem
-	if (f_mount(0, &fs) != FR_OK) {
+	if (f_mount(&fs, "", 0) != FR_OK) {
 		printf("f_mount failed!\n");
 		return;
 	}
+	printf("mounted\n");
+	// list dir
+	FRESULT res;
+	DIR dir;
+	UINT i;
+	static FILINFO fno;
+	static char path[256] = "/";
 
+	printf("listing dir\n");
+	res = f_opendir(&dir, path);                       /* Open the directory */
+    if (res == FR_OK) {
+        for (;;) {
+            res = f_readdir(&dir, &fno);                   /* Read a directory item */
+            if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+            if (fno.fattrib & AM_DIR) {                    /* It is a directory */
+                printf("D %s\n",  fno.fname);
+            } else {                                       /* It is a file. */
+                printf("F %s\n", fno.fname);
+            }
+        }
+        f_closedir(&dir);
+    } else {
+		printf("Could not open dir '/'\n");
+	}
+	printf("done listing dir\n");
 	//Create bootrom file
 	if (f_open(&file, "bootrom.bin", FA_WRITE|FA_CREATE_ALWAYS) != FR_OK) {
 		printf("f_open failed!\n");
 		return;
 	}
 
-	u16 bytes_written;
-
+	u32 bytes_written;
+	printf("writing file\n");
 	//Write bootrom to file
 	if (f_write(&file, bootrom_address, bootrom_size, &bytes_written) != FR_OK) {
 		printf("f_write failed!\n");
@@ -30,10 +54,11 @@ void dump_bootrom() {
 	}
 
 	//Close file
-	if (f_close(&file) != FR_OK) {
-		printf("f_close failed!\n");
+	if ((res = f_close(&file)) != FR_OK) {
+		printf("f_close failed with %d!\n", res);
 		return;
 	}
+	printf("done\n");
 }
 
 int main() {
@@ -46,6 +71,7 @@ int main() {
 	//Initialize HP Remote Serial
 	sdkUartHpRemoteInit();
 
+	printf("attempting to dump bootrom to ms0:/bootrom.bin\n");
 	//Try to dump bootrom to file
 	dump_bootrom();
 
