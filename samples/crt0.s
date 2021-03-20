@@ -5,6 +5,7 @@
 
 .ent _start
 _start:
+    li $sp, 0x040e0000
     jal main
     lui $gp, 0
     li $sp, 0x80013FF0
