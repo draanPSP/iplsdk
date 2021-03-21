@@ -3,7 +3,7 @@ add_executable(memory_stick_rw)
 target_sources(memory_stick_rw PRIVATE main.cpp)
 target_sources(memory_stick_rw PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../crt0.s)
 
-target_link_libraries(memory_stick_rw iplsdk::tff iplsdk::serial iplsdk::syscon)
+target_link_libraries(memory_stick_rw iplsdk::fatfs iplsdk::serial iplsdk::syscon)
 
 # Enable Link Time Optimization - doesn't seem to be required
 # target_compile_options(flash_led PRIVATE -flto)
