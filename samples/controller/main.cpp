@@ -6,10 +6,6 @@ int main() {
 	//Init communication with syscon
 	iplSysconInit();
 
-	//Tell syscon to apply power to MS and WLAN LED
-	iplSysconCtrlLED(SysconLed::WLAN, true);
-	iplSysconCtrlLED(SysconLed::MS, true);
-
 	//Configure GPIO to control the LED state
 	iplGpioSetPortMode(GpioPort::WLAN_LED, GpioPortMode::OUTPUT);
 	iplGpioSetPortMode(GpioPort::MS_LED, GpioPortMode::OUTPUT);
@@ -18,6 +14,10 @@ int main() {
 
 	//Initially turn off WLAN LED
 	iplGpioPortSet(GpioPort::WLAN_LED);
+
+	//Tell syscon to apply power to MS and WLAN LED
+	iplSysconCtrlLED(SysconLed::WLAN, true);
+	iplSysconCtrlLED(SysconLed::MS, true);
 	
 	while (true) {
 		iplReadBufferPositive(&pad);
