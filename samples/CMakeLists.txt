@@ -1,4 +1,3 @@
-
 project(samples VERSION 1.0 LANGUAGES C CXX ASM)
 
 set(LOAD_ADDR 0x040F0000)
