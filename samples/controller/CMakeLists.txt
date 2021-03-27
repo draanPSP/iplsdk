@@ -3,7 +3,7 @@ add_executable(controller)
 target_sources(controller PRIVATE main.cpp)
 target_sources(controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../crt0.s)
 
-target_link_libraries(controller iplsdk::ctrl iplsdk::lowio iplsdk::syscon)
+target_link_libraries(controller PRIVATE iplsdk::ctrl iplsdk::lowio iplsdk::syscon)
 
 # Enable Link Time Optimization - doesn't seem to be required
 # target_compile_options(controller PRIVATE -flto)

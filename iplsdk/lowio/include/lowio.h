@@ -357,7 +357,7 @@ inline u32 sdkGetBootromTimestampFromRom() {
 inline u32 sdkGetBootromTimestampFromReg() {
 	u32 tstamp;
 	
-	asm ("cfc0 %0, $17" : "=r" (tstamp));
+	asm ("cfc0 %0, $17\n" : "=r" (tstamp));
 	
 	return tstamp;
 }

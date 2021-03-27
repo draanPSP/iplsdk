@@ -8,4 +8,4 @@ target_sources(serial PRIVATE serial.cpp printf.c)
 #disable extra format specifiers for less code
 target_compile_definitions(serial PRIVATE PRINTF_DISABLE_SUPPORT_FLOAT PRINTF_DISABLE_SUPPORT_EXPONENTIAL PRINTF_DISABLE_SUPPORT_LONG_LONG)
 
-target_link_libraries(serial iplsdk::hw iplsdk::lowio)
+target_link_libraries(serial PRIVATE iplsdk::hw iplsdk::lowio)

@@ -10,7 +10,7 @@ constexpr inline u32 bootrom_size = 0x1000;
 
 void dump_bootrom() {
 	//Initialize Memory Stick & FAT Filesystem
-	if (f_mount(&fs, "", 0) != FR_OK) {
+	if (f_mount(&fs, "ms0:", 0) != FR_OK) {
 		printf("f_mount failed!\n");
 		return;
 	}
@@ -40,7 +40,7 @@ void dump_bootrom() {
 	}
 	printf("done listing dir\n");
 	//Create bootrom file
-	if (f_open(&file, "bootrom.bin", FA_WRITE|FA_CREATE_ALWAYS) != FR_OK) {
+	if (f_open(&file, "ms0:/bootrom.bin", FA_WRITE|FA_CREATE_ALWAYS) != FR_OK) {
 		printf("f_open failed!\n");
 		return;
 	}

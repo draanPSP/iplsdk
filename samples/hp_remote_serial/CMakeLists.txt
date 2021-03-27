@@ -3,10 +3,10 @@ add_executable(hp_remote_serial)
 target_sources(hp_remote_serial PRIVATE main.cpp)
 target_sources(hp_remote_serial PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../crt0.s)
 
-target_link_libraries(hp_remote_serial iplsdk::lowio iplsdk::serial iplsdk::syscon)
+target_link_libraries(hp_remote_serial PRIVATE iplsdk::lowio iplsdk::serial iplsdk::syscon)
 
 # Enable Link Time Optimization - doesn't seem to be required
-# target_compile_options(flash_led PRIVATE -flto)
+# target_compile_options(hp_remote_serial PRIVATE -flto)
 
 add_custom_command(
         TARGET hp_remote_serial
