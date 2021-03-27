@@ -1,18 +1,17 @@
 add_executable(controller)
 
 target_sources(controller PRIVATE main.cpp)
-target_sources(controller PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../crt0.s)
 
-target_link_libraries(controller PRIVATE iplsdk::ctrl iplsdk::lowio iplsdk::syscon)
+target_link_libraries(controller PRIVATE iplsdk::crt iplsdk::ctrl iplsdk::lowio iplsdk::syscon)
 
 # Enable Link Time Optimization - doesn't seem to be required
 # target_compile_options(controller PRIVATE -flto)
 
 add_custom_command(
-        TARGET controller
-        POST_BUILD
-        COMMAND psp-objcopy -O binary controller controller.bin
-        COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/../convert_to_tm.py --infile controller.bin --outfile controller_tm.bin
+    TARGET controller
+    POST_BUILD
+    COMMAND psp-objcopy -O binary controller controller.bin
+    COMMAND python3 ${PROJECT_SOURCE_DIR}/convert_to_tm.py --infile controller.bin --outfile controller_tm.bin
 )
 
-target_link_options(controller PRIVATE -nostdlib -T${CMAKE_CURRENT_SOURCE_DIR}/../linker.x)
+target_link_options(controller PRIVATE -nostdlib -T${PROJECT_BINARY_DIR}/linker.x)

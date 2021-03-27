@@ -2,21 +2,32 @@ OUTPUT_FORMAT("elf32-littlemips", "elf32-bigmips", "elf32-littlemips")
 OUTPUT_ARCH(mips:allegrex)
 ENTRY(_start)
 
+STACK_SIZE = @STACK_SIZE@;
+
 SECTIONS
 {
-    . = 0x040f0000;
+    . = @LOAD_ADDR@;
     .text :
     {
-        *(.text.vector)
+        KEEP(*(.text.vector))
         *(.text)
     }
     .sdata : { *(.sdata) *(.sdata.*) *(.gnu.linkonce.s.*) }
     .rodata : { *(.rodata) }
     .data : { *(.data*) }
-    .bss :
+    .bss (NOLOAD):
     {
         __bss_start = .;
-        *(.bss*)
+        *(.bss* .bss.*)
+        *(COMMON)
         __bss_end = .;
+    }
+    .stack (NOLOAD):
+    {
+        . = ALIGN(4);
+        __stack_bottom = .;
+        . = . + STACK_SIZE;
+        . = ALIGN(4);
+        __stack_top = .;
     }
 }

@@ -13,14 +13,20 @@ clear_bss_loop:
     addiu $a0, $a0, 4
     bnel $a2, $0, clear_bss_loop
     sw $0, -4($a0)
-
-    li $sp, 0x040e0000
-    jal main
-    lui $gp, 0
     
-    li $sp, 0x80013FF0
-    li $t9, 0x80010000
-    jr $t9
+    la $sp, __stack_top
+
+#    jal _init
+    move $gp, $0
+    
+    jal main
+    nop
+
+#    jal _fini
+#    nop   
+    
+inf_loop:
+    b inf_loop
     nop
 .end _start
 .set reorder

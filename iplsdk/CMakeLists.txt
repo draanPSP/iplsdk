@@ -1,3 +1,4 @@
+add_subdirectory(crt)
 add_subdirectory(hw)
 add_subdirectory(cache)
 add_subdirectory(ctrl)
