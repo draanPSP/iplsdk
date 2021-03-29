@@ -342,7 +342,7 @@ inline u32 iplSysregGetTachyonVersion() {
 	if (ver & 0xFF000000) {
 		return (ver >> 8);
 	} else {
-		return 0x10;
+		return 0x100000;
 	}
 }
 
