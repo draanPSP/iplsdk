@@ -12,8 +12,13 @@ int main() {
 	//Initialize HP Remote Serial
 	sdkUartHpRemoteInit();
 
+	auto const tachyonVer = iplSysregGetTachyonVersion();
+	auto const baryonVer = iplSysconGetBaryonVersion();
+
 	printf("Your PSP's bootrom timestamp is 0x%x\n", sdkGetBootromTimestampFromRom());
-	printf("Your PSP's Tachyon version is 0x%x\n", iplSysregGetTachyonVersion());
+	printf("Your PSP's Tachyon version is 0x%x\n", tachyonVer);
+	printf("Your PSP's Baryon version is 0x%x\n", baryonVer);
+	printf("Your PSP's model is %d\n", sdkKernelGetModel(tachyonVer, baryonVer));
 
 	for (u32 i = 0; i < 10; ++i) {
 		printf("Hello world line %d\n", i);

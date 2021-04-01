@@ -364,4 +364,26 @@ inline u32 sdkGetBootromTimestampFromReg() {
 
 void sdkWait(u32 usec);
 
+constexpr inline u32 sdkKernelGetModel(u32 const tachyonVer, u32 const baryonVer) {
+	if (tachyonVer <= 0x400000) {
+		return 0; //PSP Fat
+	} else if (tachyonVer == 0x500000) {
+		return 1; //PSP Slim
+	} else if (tachyonVer == 0x600000 && baryonVer == 0x243000) {
+		return 1; //PSP Slim
+	} else if (tachyonVer <= 0x600000) {
+		return 2; //PSP Brite
+	} else if (tachyonVer == 0x810000 && baryonVer == 0x2C4000) {
+		return 3; //PSP Brite
+	} else if (tachyonVer <= 0x800000) {
+		return 4; //PSP Go
+	} else if (tachyonVer == 0x810000 && baryonVer == 0x2E4000) {
+		return 6; //PSP Brite
+	} else if (tachyonVer == 0x820000 && baryonVer == 0x2E4000) {
+		return 8; //PSP Brite
+	} else {
+		return 10; //PSP Street
+	}
+}
+
 #endif //IPLSDK_LOWIO
