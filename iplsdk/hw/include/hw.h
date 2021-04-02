@@ -56,6 +56,7 @@ inline vu32 &memoryRef(u32 const loc) {
 	return *reinterpret_cast<u32 *>(BA | physicalAddr(loc));
 }
 
+constexpr inline auto memoryK0 = memoryRef<static_cast<u32>(MemRegions::K0)>;
 constexpr inline auto memoryK1 = memoryRef<static_cast<u32>(MemRegions::K1)>;
 
 template<u32 R, typename T>
