@@ -10,6 +10,7 @@ enum class SysconCmd : u8 {
 
 	GET_WAKE_UP_FACTOR = 0xE,
 
+	RESET_DEVICE = 0x32,
 	CTRL_HR_POWER = 0x34,
 	POWER_STANDBY = 0x35,
 	POWER_SUSPEND = 0x36,
@@ -58,6 +59,20 @@ inline s32 iplSysconGetWakeUpFactor(u32 *factorPtr) {
 
 inline s32 iplSysconCtrlHRPower(bool const enable) {
 	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_HR_POWER, 3);
+}
+
+inline s32 iplSysconResetDevice(u32 reset, u32 const mode) {
+	if (reset == 1) {
+		if (mode == 0 || mode == 2) {
+			reset |= 0x40;
+		} else {
+			return -1;
+		}
+	} else if (mode != 0) {
+		reset |= 0x80;
+	}
+	
+	return _iplSysconCommonWrite(reset, SysconCmd::RESET_DEVICE, 3);
 }
 
 inline s32 iplSysconPowerStandby() {
