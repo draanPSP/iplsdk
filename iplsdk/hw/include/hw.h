@@ -43,6 +43,17 @@ constexpr inline u32 REG_MS_DATA = 0x1D200034;
 constexpr inline u32 REG_MS_STATUS = 0x1D200038;
 constexpr inline u32 REG_MS_SYS = 0x1D20003C;
 
+constexpr inline u32 REG_KIRK_SIG = 0x1DE00000;
+constexpr inline u32 REG_KIRK_VERSION = 0x1DE00004;
+constexpr inline u32 REG_KIRK_ERROR = 0x1DE00008;
+constexpr inline u32 REG_KIRK_PROC_PHASE = 0x1DE0000C;
+constexpr inline u32 REG_KIRK_CMD = 0x1DE00010;
+constexpr inline u32 REG_KIRK_RESULT = 0x1DE00014;
+constexpr inline u32 REG_KIRK_PATTERN = 0x1DE0001C;
+constexpr inline u32 REG_KIRK_PATTERN_END = 0x1DE00028;
+constexpr inline u32 REG_KIRK_SRC_ADDR = 0x1DE0002C;
+constexpr inline u32 REG_KIRK_DEST_ADDR = 0x1DE00030;
+
 constexpr inline u32 REG_GPIO_OUTPUT = 0x1E240000;
 constexpr inline u32 REG_GPIO_VALUE = 0x1E240004;
 constexpr inline u32 REG_GPIO_SET = 0x1E240008;
