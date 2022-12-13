@@ -24,6 +24,20 @@ constexpr inline u32 REG_CLK_REF = 0x1C100064;
 constexpr inline u32 REG_IO_ENABLE = 0x1C100078;
 constexpr inline u32 REG_GPIO_ENABLE = 0x1C10007C;
 
+constexpr inline u32 REG_EMC_CTRL = 0x1D101000;
+constexpr inline u32 REG_EMC_STATUS = 0x1D101004;
+constexpr inline u32 REG_EMC_CMD = 0x1D101008;
+constexpr inline u32 REG_EMC_ADDR = 0x1D10100C;
+constexpr inline u32 REG_EMC_RST = 0x1D101014;
+constexpr inline u32 REG_EMC_DMA_ADDR = 0x1D101020;
+constexpr inline u32 REG_EMC_DMA_CTRL = 0x1D101024;
+constexpr inline u32 REG_EMC_DMA_STATUS = 0x1D101028;
+constexpr inline u32 REG_EMC_RESUME = 0x1D101200;
+constexpr inline u32 REG_EMC_DATA = 0x1D101300;
+constexpr inline u32 EMC_USER_DATA_BUF = 0x1FF00000;
+constexpr inline u32 REG_EMC_USER_ECC_BUF = 0x1FF00800;
+constexpr inline u32 EMC_SPARE_DATA_BUF = 0x1FF00900;
+
 constexpr inline u32 REG_MS_CMD = 0x1D200030;
 constexpr inline u32 REG_MS_DATA = 0x1D200034;
 constexpr inline u32 REG_MS_STATUS = 0x1D200038;
