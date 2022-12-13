@@ -62,6 +62,14 @@ inline void iplSysregApbBusClockDisable() {
 	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
 }
 
+inline void iplSysregEmcsmBusClockEnable() {
+	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::EMCSM));
+}
+
+inline void iplSysregEmcsmBusClockDisable() {
+	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::EMCSM));
+}
+
 enum class Clk1 : u8 {
 	ATA = 0,
 	USB = 4,
@@ -188,6 +196,13 @@ constexpr inline auto iplSysregSpiIoDisable = regDisableBit<REG_IO_ENABLE, IoSpi
 
 constexpr inline auto iplSysregUartIoEnable = regEnableBit<REG_IO_ENABLE, IoUart>;
 constexpr inline auto iplSysregUartIoDisable = regDisableBit<REG_IO_ENABLE, IoUart>;
+
+inline void iplSysregEmcsmIoEnable() {
+	return regEnableBit<REG_IO_ENABLE>(static_cast<u8>(Io::EMCSM));
+}
+inline void iplSysregEmcsmIoDisable() {
+	return regDisableBit<REG_IO_ENABLE>(static_cast<u8>(Io::EMCSM));
+}
 
 enum class ClkRef : u8 {
 	REF0,
