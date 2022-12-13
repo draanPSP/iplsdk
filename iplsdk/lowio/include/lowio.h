@@ -70,6 +70,14 @@ inline void iplSysregEmcsmBusClockDisable() {
 	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::EMCSM));
 }
 
+inline void iplSysregKirkBusClockEnable() {
+	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::KIRK));
+}
+
+inline void iplSysregKirkBusClockDisable() {
+	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::KIRK));
+}
+
 enum class Clk1 : u8 {
 	ATA = 0,
 	USB = 4,
