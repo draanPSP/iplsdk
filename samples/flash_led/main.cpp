@@ -25,7 +25,7 @@ int main() {
 	//Note: on 02g units the following code causes both
 	//LEDs to flash at the same time, because WLAN LED logic
 	//is inverted there.
-	for (u32 i = 0; i < 10; ++i) {
+	for (std::uint32_t i = 0; i < 10; ++i) {
 		iplGpioPortSet(GpioPort::MS_LED);
 		iplGpioPortClear(GpioPort::WLAN_LED);
 

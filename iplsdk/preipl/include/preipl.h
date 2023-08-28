@@ -1,20 +1,20 @@
 #ifndef IPLSDK_PREIPL
 #define IPLSDK_PREIPL
 
-#include <psptypes.h>
+#include <cstdint>
 #include <type_traits>
 
 using v_v_function_t = std::add_pointer_t<void()>;
-using i_v_function_t = std::add_pointer_t<s32()>;
-using i_ivp_function_t = std::add_pointer_t<s32(s32,void*)>;
-using i_ivpvp_function_t = std::add_pointer_t<s32(s32,void*,void*)>;
-using i_vpvpi_function_t = std::add_pointer_t<s32(void*,void*,s32)>;
+using i_v_function_t = std::add_pointer_t<std::int32_t()>;
+using i_ivp_function_t = std::add_pointer_t<std::int32_t(std::int32_t,void*)>;
+using i_ivpvp_function_t = std::add_pointer_t<std::int32_t(std::int32_t,void*,void*)>;
+using i_vpvpi_function_t = std::add_pointer_t<std::int32_t(void*,void*,std::int32_t)>;
 
 inline auto const preIplEntry = reinterpret_cast<i_v_function_t const>(0x80010000);
 
-constexpr inline u32 TACHYON_0x140000_BOOTROM_TIMESTAMP = 0x20040420;
-constexpr inline u32 TACHYON_0x400000_BOOTROM_TIMESTAMP = 0x20050104;
-constexpr inline u32 TACHYON_0x600000_BOOTROM_TIMESTAMP = 0x20070910;
+constexpr inline std::uint32_t TACHYON_0x140000_BOOTROM_TIMESTAMP = 0x20040420;
+constexpr inline std::uint32_t TACHYON_0x400000_BOOTROM_TIMESTAMP = 0x20050104;
+constexpr inline std::uint32_t TACHYON_0x600000_BOOTROM_TIMESTAMP = 0x20070910;
 
 //Tachyon 0x00140000-0x00500000
 inline auto const oldPreIplMsInit = reinterpret_cast<i_v_function_t const>(0x80010240);

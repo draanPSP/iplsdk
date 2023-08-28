@@ -2,12 +2,12 @@
 #include <syscon.h>
 
 //All button bits (see ctrl.prx in uOFW)
-constexpr inline u32 CTRL_SYSCON_KERNEL_MODE_BUTTONS_NEGATIVE_LOGIC = 0x20F7F3F9;
+constexpr inline std::uint32_t CTRL_SYSCON_KERNEL_MODE_BUTTONS_NEGATIVE_LOGIC = 0x20F7F3F9;
 
-s32 iplReadBufferPositive(SceCtrlData *pad_data) {
-	u8 tx[0x10], rx[0x10];
+std::int32_t iplReadBufferPositive(SceCtrlData *pad_data) {
+	std::uint8_t tx[0x10], rx[0x10];
 
-	tx[TX_CMD] = static_cast<u8>(SysconCmd::GET_KERNEL_DIGITAL_KEY);
+	tx[TX_CMD] = static_cast<std::uint8_t>(SysconCmd::GET_KERNEL_DIGITAL_KEY);
 	tx[TX_LEN] = 2;
 
     auto const ret = sdkSysconTransmitReceive(tx, rx);

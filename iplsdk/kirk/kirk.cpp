@@ -9,18 +9,18 @@ namespace {
 	};
 }
 
-s32 sdkKirkCmd(void *dst, u32 dsize, void *src, u32 ssize, KirkCmd cmd)
+std::int32_t sdkKirkCmd(void *dst, std::uint32_t dsize, void *src, std::uint32_t ssize, KirkCmd cmd)
 {
 	iplSysregKirkBusClockEnable();
 	
 	iplKernelDcacheWritebackInvalidateAll();
 
 	memoryK1(REG_KIRK_CMD) = cmd;
-	memoryK1(REG_KIRK_SRC_ADDR) = physicalAddr(reinterpret_cast<u32>(src));
-	memoryK1(REG_KIRK_DEST_ADDR) = physicalAddr(reinterpret_cast<u32>(dst));
+	memoryK1(REG_KIRK_SRC_ADDR) = physicalAddr(reinterpret_cast<std::uint32_t>(src));
+	memoryK1(REG_KIRK_DEST_ADDR) = physicalAddr(reinterpret_cast<std::uint32_t>(dst));
 	memoryK1(REG_KIRK_PROC_PHASE) = Phase::P1;
 
-	u32 status;
+	std::uint32_t status;
 	do {
 		status = memoryK1(REG_KIRK_PATTERN);
 	} while ((status & 0x11) == 0);

@@ -1,4 +1,4 @@
-#include <psptypes.h>
+#include <cstdint>
 
 #include <kirk.h>
 #include <lowio.h>
@@ -15,32 +15,32 @@
 #define IPL_BLOCK_SIZE 0x1000
 
 typedef struct {
-	u32 dest;
-	u32 size;
-	u32 entry;
-	u32 checksum;
-	u32 data;
+	std::uint32_t dest;
+	std::uint32_t size;
+	std::uint32_t entry;
+	std::uint32_t checksum;
+	std::uint32_t data;
 } IplHeader;
 
-u16 iplBlockListBuf[PAGE_SIZE/sizeof(u16)];
-u32 spareBuf[4];
+std::uint16_t iplBlockListBuf[PAGE_SIZE/sizeof(std::uint16_t)];
+std::uint32_t spareBuf[4];
 void *iplBuf = reinterpret_cast<void *>(IPL_BUF);
 IplHeader *iplHeader = reinterpret_cast<IplHeader *>(IPL_BUF);
 
-s32 readIplBlockList() {
-	u32 pagesPerBlock = iplNandGetPagesPerBlock();
+std::int32_t readIplBlockList() {
+	std::uint32_t pagesPerBlock = iplNandGetPagesPerBlock();
 
 	for (int i = 0; i < IPL_BLOCK_LIST_DUP_COUNT; i++) {
-		u32 block = IPL_BLOCK_LIST_BLOCK + i;
-		u32 ppn = block * pagesPerBlock;
+		std::uint32_t block = IPL_BLOCK_LIST_BLOCK + i;
+		std::uint32_t ppn = block * pagesPerBlock;
 		int ret = iplNandReadPage(ppn, iplBlockListBuf, spareBuf);
 
 		if (ret >= 0 && spareBuf[1] == IPL_BLOCK_ID) {
 			printf("Found IPL block list at block 0x%x\n", block);
 			printf("IPL Blocks: ");
 
-			for (int j = 0; j < sizeof(iplBlockListBuf) / sizeof(u16); j++) {
-				u16 iplBlock = iplBlockListBuf[j];
+			for (int j = 0; j < sizeof(iplBlockListBuf) / sizeof(std::uint16_t); j++) {
+				std::uint16_t iplBlock = iplBlockListBuf[j];
 
 				if (!iplBlock) {
 					break;
@@ -54,11 +54,11 @@ s32 readIplBlockList() {
 	return -1;
 }
 
-u32 readIplBlock(u32 iplBlockNum, void *dst) {
-	u32 block = iplBlockListBuf[iplBlockNum / 4];
-	u16 page = 0;
-	u32 ppn;
-	u32 ret;
+std::uint32_t readIplBlock(std::uint32_t iplBlockNum, void *dst) {
+	std::uint32_t block = iplBlockListBuf[iplBlockNum / 4];
+	std::uint16_t page = 0;
+	std::uint32_t ppn;
+	std::uint32_t ret;
 
 	printf("Reading IPL block: 0x%X\n", iplBlockNum);
 	printf("NAND Block: 0x%X\n", block);
@@ -66,7 +66,7 @@ u32 readIplBlock(u32 iplBlockNum, void *dst) {
 	for (int i = 0; i < 8; i++)
 	{
 		ppn = (block << 2 | iplBlockNum & 0x3) * 8 + i;
-		ret = iplNandReadPage(ppn, (void*)((u32)dst + i*PAGE_SIZE), spareBuf);
+		ret = iplNandReadPage(ppn, (void*)((std::uint32_t)dst + i*PAGE_SIZE), spareBuf);
 		if (spareBuf[1] != IPL_BLOCK_ID)
 			return -1;
 	}

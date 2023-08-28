@@ -1,17 +1,17 @@
 #ifndef IPLSDK_NAND
 #define IPLSDK_NAND
 
-#include <psptypes.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-	s32 iplNandInit(void);
-	s32 iplNandGetPageSize(void);
-	s32 iplNandGetPagesPerBlock(void);
-	s32 iplNandGetTotalBlocks(void);
-	s32 iplNandReadPage(u32 ppn, void *user, void *spare);
+	int32_t iplNandInit(void);
+	int32_t iplNandGetPageSize(void);
+	int32_t iplNandGetPagesPerBlock(void);
+	int32_t iplNandGetTotalBlocks(void);
+	int32_t iplNandReadPage(uint32_t ppn, void *user, void *spare);
 
 #ifdef __cplusplus
 }

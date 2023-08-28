@@ -1,15 +1,15 @@
 #ifndef IPLSDK_MS
 #define IPLSDK_MS
 
-#include <psptypes.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
     void sdkMsInit();
-    s32 sdkMsReadSector(u32 const sector, void *buf);
-    s32 sdkMsWriteSector(u32 const sector, void const *buf);
+    int32_t sdkMsReadSector(uint32_t const sector, void *buf);
+    int32_t sdkMsWriteSector(uint32_t const sector, void const *buf);
 
 #ifdef __cplusplus
 }

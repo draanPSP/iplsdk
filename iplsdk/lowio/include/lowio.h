@@ -1,10 +1,10 @@
 #ifndef IPLSDK_LOWIO
 #define IPLSDK_LOWIO
 
-#include <psptypes.h>
+#include <cstdint>
 #include <hw.h>
 
-enum class Reset : u8 {
+enum class Reset : std::uint8_t {
 	TOP = 0,
 	SC,
 	ME,
@@ -18,15 +18,15 @@ enum class Reset : u8 {
 	KIRK
 };
 
-enum class ResetMs : u8 {
-	IF0 = static_cast<u8>(Reset::MSIF0),
+enum class ResetMs : std::uint8_t {
+	IF0 = static_cast<std::uint8_t>(Reset::MSIF0),
 	IF1
 };
 
 constexpr inline auto iplSysregMsifResetEnable = regEnableBit<REG_RESET_ENABLE, ResetMs>;
 constexpr inline auto iplSysregMsifResetDisable = regDisableBit<REG_RESET_ENABLE, ResetMs>;
 
-enum class BusClk : u8 {
+enum class BusClk : std::uint8_t {
 	ME = 0,
 	AWA,
 	AWB,
@@ -46,8 +46,8 @@ enum class BusClk : u8 {
 	AUDIO1
 };
 
-enum class BusClkMs : u8 {
-	IF0 = static_cast<u8>(BusClk::MSIF0),
+enum class BusClkMs : std::uint8_t {
+	IF0 = static_cast<std::uint8_t>(BusClk::MSIF0),
 	IF1
 };
 
@@ -55,45 +55,45 @@ constexpr inline auto iplSysregMsifBusClockEnable = regEnableBit<REG_BUS_CLK_ENA
 constexpr inline auto iplSysregMsifBusClockDisable = regDisableBit<REG_BUS_CLK_ENABLE, BusClkMs>;
 
 inline void iplSysregApbBusClockEnable() {
-	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
+	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<std::uint8_t>(BusClk::APB));
 }
 
 inline void iplSysregApbBusClockDisable() {
-	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::APB));
+	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<std::uint8_t>(BusClk::APB));
 }
 
 inline void iplSysregEmcsmBusClockEnable() {
-	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::EMCSM));
+	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<std::uint8_t>(BusClk::EMCSM));
 }
 
 inline void iplSysregEmcsmBusClockDisable() {
-	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::EMCSM));
+	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<std::uint8_t>(BusClk::EMCSM));
 }
 
 inline void iplSysregKirkBusClockEnable() {
-	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::KIRK));
+	return regEnableBit<REG_BUS_CLK_ENABLE>(static_cast<std::uint8_t>(BusClk::KIRK));
 }
 
 inline void iplSysregKirkBusClockDisable() {
-	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<u8>(BusClk::KIRK));
+	return regDisableBit<REG_BUS_CLK_ENABLE>(static_cast<std::uint8_t>(BusClk::KIRK));
 }
 
-enum class Clk1 : u8 {
+enum class Clk1 : std::uint8_t {
 	ATA = 0,
 	USB = 4,
 	MSIF0 = 8,
 	MSIF1
 };
 
-enum class ClkMs : u8 {
-	IF0 = static_cast<u8>(Clk1::MSIF0),
+enum class ClkMs : std::uint8_t {
+	IF0 = static_cast<std::uint8_t>(Clk1::MSIF0),
 	IF1
 };
 
 constexpr inline auto iplSysregMsifClkEnable = regEnableBit<REG_CLK1_ENABLE, ClkMs>;
 constexpr inline auto iplSysregMsifClkDisable = regDisableBit<REG_CLK1_ENABLE, ClkMs>;
 
-enum class Clk2 : u8 {
+enum class Clk2 : std::uint8_t {
 	SPI0 = 0,
 	SPI1,
 	SPI2,
@@ -121,8 +121,8 @@ enum class Clk2 : u8 {
 	UNK
 };
 
-enum class ClkSpi : u8 {
-	SYSCON = static_cast<u8>(Clk2::SPI0),
+enum class ClkSpi : std::uint8_t {
+	SYSCON = static_cast<std::uint8_t>(Clk2::SPI0),
 	SPI1,
 	SPI2,
 	SPI3,
@@ -130,8 +130,8 @@ enum class ClkSpi : u8 {
 	SPI5
 };
 
-enum class ClkUart : u8 {
-	UART0 = static_cast<u8>(Clk2::UART0),
+enum class ClkUart : std::uint8_t {
+	UART0 = static_cast<std::uint8_t>(Clk2::UART0),
 	UART1,
 	UART2,
 	DBG_UART4,	//available as pads on the motherboard
@@ -139,7 +139,7 @@ enum class ClkUart : u8 {
 	IRDA
 };
 
-enum class Io : u8 {
+enum class Io : std::uint8_t {
 	EMCSM = 1,
 	USB,
 	ATA,
@@ -167,13 +167,13 @@ enum class Io : u8 {
 	SPI5
 };
 
-enum class IoMs : u8 {
-	IF0 = static_cast<u8>(Io::MSIF0),
+enum class IoMs : std::uint8_t {
+	IF0 = static_cast<std::uint8_t>(Io::MSIF0),
 	IF1
 };
 
-enum class IoUart : u8 {
-	UART0 = static_cast<u8>(Io::UART0),
+enum class IoUart : std::uint8_t {
+	UART0 = static_cast<std::uint8_t>(Io::UART0),
 	UART1,
 	UART2,
 	DBG_UART4,
@@ -181,8 +181,8 @@ enum class IoUart : u8 {
 	IRDA
 };
 
-enum class IoSpi : u8 {
-	SYSCON = static_cast<u8>(Io::SPI0),
+enum class IoSpi : std::uint8_t {
+	SYSCON = static_cast<std::uint8_t>(Io::SPI0),
 	SPI1,
 	SPI2,
 	SPI3,
@@ -206,13 +206,13 @@ constexpr inline auto iplSysregUartIoEnable = regEnableBit<REG_IO_ENABLE, IoUart
 constexpr inline auto iplSysregUartIoDisable = regDisableBit<REG_IO_ENABLE, IoUart>;
 
 inline void iplSysregEmcsmIoEnable() {
-	return regEnableBit<REG_IO_ENABLE>(static_cast<u8>(Io::EMCSM));
+	return regEnableBit<REG_IO_ENABLE>(static_cast<std::uint8_t>(Io::EMCSM));
 }
 inline void iplSysregEmcsmIoDisable() {
-	return regDisableBit<REG_IO_ENABLE>(static_cast<u8>(Io::EMCSM));
+	return regDisableBit<REG_IO_ENABLE>(static_cast<std::uint8_t>(Io::EMCSM));
 }
 
-enum class ClkRef : u8 {
+enum class ClkRef : std::uint8_t {
 	REF0,
 	REF1,
 	REF2,
@@ -224,21 +224,21 @@ enum class ClkRef : u8 {
 };
 
 inline void iplSysregSpiClkSelect(ClkSpi const clk, ClkRef const ref) {
-	auto const refMask = static_cast<u8>(ClkRef::REF7);
-	auto const clkBits = static_cast<u8>(clk) << 2;
+	auto const refMask = static_cast<std::uint8_t>(ClkRef::REF7);
+	auto const clkBits = static_cast<std::uint8_t>(clk) << 2;
 
-	memoryK1(REG_CLK_REF) = memoryK1(REG_CLK_REF) & ~(refMask << clkBits) | (static_cast<u8>(ref) << clkBits);
+	memoryK1(REG_CLK_REF) = memoryK1(REG_CLK_REF) & ~(refMask << clkBits) | (static_cast<std::uint8_t>(ref) << clkBits);
 }
 
 inline void iplSysregGpioEnable() {
-	return regEnableBit<REG_CLK2_ENABLE>(static_cast<u8>(Clk2::GPIO));
+	return regEnableBit<REG_CLK2_ENABLE>(static_cast<std::uint8_t>(Clk2::GPIO));
 }
 
 inline void iplSysregGpioDisable() {
-	return regDisableBit<REG_CLK2_ENABLE>(static_cast<u8>(Clk2::GPIO));
+	return regDisableBit<REG_CLK2_ENABLE>(static_cast<std::uint8_t>(Clk2::GPIO));
 }
 
-enum class GpioPort : u8 {
+enum class GpioPort : std::uint8_t {
 	LCD_RESET = 0,
 	DEBUG_1,
 	DEBUG_2,
@@ -253,13 +253,13 @@ enum class GpioPort : u8 {
 	UMD_STATUS
 };
 
-enum class GpioPortMode : u8 {
+enum class GpioPortMode : std::uint8_t {
 	OUTPUT = 0,
 	INPUT,
 	NONE        //high impedance?
 };
 
-enum class GpioIntrMode : u8 {
+enum class GpioIntrMode : std::uint8_t {
 	HI,
 	LO,
 	RISING_EDGE,
@@ -298,12 +298,12 @@ constexpr inline auto iplGpioPortClear = regSetBit<REG_GPIO_CLEAR, GpioPort>;
 constexpr inline auto iplGpioAcquireIntr = regSetBit<REG_GPIO_INTR_ACK, GpioPort>;
 
 inline bool iplGpioQueryIntr(GpioPort const port) {
-	const u32 mask = (1 << static_cast<u8>(port));
+	const std::uint32_t mask = (1 << static_cast<std::uint8_t>(port));
 
 	return (memoryK1(REG_GPIO_INTR_VALUE) & mask) == mask;
 }
 
-inline u32 iplGpioPortRead() {
+inline std::uint32_t iplGpioPortRead() {
 	return memoryK1(REG_GPIO_VALUE);
 }
 
@@ -359,8 +359,8 @@ inline void iplGpioSetIntrMode(GpioPort const port, GpioIntrMode const mode) {
 	iplGpioAcquireIntr(port);
 }
 
-inline u32 iplSysregGetTachyonVersion() {
-	u32 const ver = memoryK1(REG_CHIP_VERSION);
+inline std::uint32_t iplSysregGetTachyonVersion() {
+	std::uint32_t const ver = memoryK1(REG_CHIP_VERSION);
 	
 	if (ver & 0xFF000000) {
 		return (ver >> 8);
@@ -371,23 +371,23 @@ inline u32 iplSysregGetTachyonVersion() {
 
 //When the ROM is still mapped, the timestamp is available 
 //directly from the end of the binary
-inline u32 sdkGetBootromTimestampFromRom() {
+inline std::uint32_t sdkGetBootromTimestampFromRom() {
 	return memoryK1(0x1FC00FFC);
 }
 
 //Official IPL saves the timestamp to the COP0 register,
 //from where it can be retrieved after ROM access is lost
-inline u32 sdkGetBootromTimestampFromReg() {
-	u32 tstamp;
+inline std::uint32_t sdkGetBootromTimestampFromReg() {
+	std::uint32_t tstamp;
 	
 	asm ("cfc0 %0, $17\n" : "=r" (tstamp));
 	
 	return tstamp;
 }
 
-void sdkWait(u32 usec);
+void sdkWait(std::uint32_t usec);
 
-constexpr inline u32 sdkKernelGetModel(u32 const tachyonVer, u32 const baryonVer) {
+constexpr inline std::uint32_t sdkKernelGetModel(std::uint32_t const tachyonVer, std::uint32_t const baryonVer) {
 	if (tachyonVer <= 0x400000) {
 		return 0; //PSP Fat
 	} else if (tachyonVer == 0x500000) {

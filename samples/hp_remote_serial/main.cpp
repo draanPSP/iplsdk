@@ -20,7 +20,7 @@ int main() {
 	printf("Your PSP's Baryon version is 0x%x\n", baryonVer);
 	printf("Your PSP's model is %d\n", sdkKernelGetModel(tachyonVer, baryonVer));
 
-	for (u32 i = 0; i < 10; ++i) {
+	for (std::uint32_t i = 0; i < 10; ++i) {
 		printf("Hello world line %d\n", i);
 
 		sdkWait(1 * 1000 * 1000);

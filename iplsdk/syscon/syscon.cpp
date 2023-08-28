@@ -2,11 +2,11 @@
 #include <lowio.h>
 #include <cstring>
 
-u32 g_baryonVersion = 0;
+std::uint32_t g_baryonVersion = 0;
 
 namespace {
-	s32 _iplSysconPacketStart(u8 const *tx) {
-		vu32 dummy;
+	std::int32_t _iplSysconPacketStart(std::uint8_t const *tx) {
+		std::uint32_t dummy;
 
 		dummy = iplGpioPortRead();
 		iplGpioPortClear(GpioPort::SYSCON_REQUEST);
@@ -18,7 +18,7 @@ namespace {
 		dummy = memoryK1(0x1E58000C);
 		memoryK1(0x1E580020) = 3;
 
-		for (u32 i = 0; i < tx[TX_LEN] + 1; i += 2) {
+		for (std::uint32_t i = 0; i < tx[TX_LEN] + 1; i += 2) {
 			dummy = memoryK1(0x1E58000C);
 			memoryK1(0x1E580008) = (tx[i] << 8) | tx[i + 1];
 		}
@@ -35,14 +35,14 @@ namespace {
 		iplGpioAcquireIntr(GpioPort::TACHYON_SPI_CS);
 	}
 
-	s32 _iplSysconPacketEnd(u8 *rx) {
-		s32 ret = 0;
+	std::int32_t _iplSysconPacketEnd(std::uint8_t *rx) {
+		std::int32_t ret = 0;
 
 		if ((memoryK1(0x1E58000C) & 4) == 0) {
 			rx[RX_STATUS] = -1;
 			rx[RX_LEN] = 0;
 
-			for (u32 i = 0; i < 16; i++) {
+			for (std::uint32_t i = 0; i < 16; i++) {
 				asm("\n");
 			}
 
@@ -57,12 +57,12 @@ namespace {
 			memoryK1(0x1E580020) = 1;
 		}
 
-		for (u32 i = 0; i < 16; i += 2) {
+		for (std::uint32_t i = 0; i < 16; i += 2) {
 			if ((memoryK1(0x1E58000C) & 4) == 0) {
 				break;
 			}
 
-			u16 v = memoryK1(0x1E580008) & 0xFFFF;
+			std::uint16_t v = memoryK1(0x1E580008) & 0xFFFF;
 			if (i == 0) {
 				ret = v >> 8;
 			}
@@ -76,11 +76,11 @@ namespace {
 		iplGpioPortClear(GpioPort::SYSCON_REQUEST);
 
 		if (ret >= 0) {
-			u32 hash = 0;
+			std::uint32_t hash = 0;
 			if (rx[RX_LEN] < 3) { /* Received data is too short */
 				ret = -2;
 			} else if (rx[RX_LEN] < 16) {
-				for (u32 i = 0; i < rx[RX_LEN]; i++) {
+				for (std::uint32_t i = 0; i < rx[RX_LEN]; i++) {
 					hash = (hash + rx[i]) & 0xFF;
 				}
 				if ((rx[rx[RX_LEN]] ^ (~hash & 0xFF)) != 0) { /* Wrong hash */
@@ -102,22 +102,22 @@ namespace {
 		return ret;
 	}
 
-	void _iplSysconGetBaryonVersion(u32 *baryonVersionPtr) {
+	void _iplSysconGetBaryonVersion(std::uint32_t *baryonVersionPtr) {
 		_iplSysconCommonRead(baryonVersionPtr, SysconCmd::GET_BARYON);
 	}
 }
 
-u32 iplSysconGetBaryonVersion() {
+std::uint32_t iplSysconGetBaryonVersion() {
 	return g_baryonVersion;
 }
 
-s32 _iplSysconCommonRead(u32 *ptr, SysconCmd const cmd) {
-	u8 tx[0x10], rx[0x10];
+std::int32_t _iplSysconCommonRead(std::uint32_t *ptr, SysconCmd const cmd) {
+	std::uint8_t tx[0x10], rx[0x10];
 
-	s32 buf[4];
+	std::int32_t buf[4];
 
 	tx[TX_LEN] = 2;
-	tx[TX_CMD] = static_cast<u8>(cmd);
+	tx[TX_CMD] = static_cast<std::uint8_t>(cmd);
 
 	sdkSysconTransmitReceive(tx, rx);
 
@@ -130,10 +130,10 @@ s32 _iplSysconCommonRead(u32 *ptr, SysconCmd const cmd) {
 	return 0;
 }
 
-s32 _iplSysconCommonWrite(u32 const val, SysconCmd const cmd, u32 const size) {
-	u8 tx_buf[0x10], rx_buf[0x10];
+std::int32_t _iplSysconCommonWrite(std::uint32_t const val, SysconCmd const cmd, std::uint32_t const size) {
+	std::uint8_t tx_buf[0x10], rx_buf[0x10];
 
-	tx_buf[TX_CMD] = static_cast<u8>(cmd);
+	tx_buf[TX_CMD] = static_cast<std::uint8_t>(cmd);
 	tx_buf[TX_LEN] = size;
 
 	tx_buf[TX_DATA(1)] = (val >> 8);
@@ -144,12 +144,12 @@ s32 _iplSysconCommonWrite(u32 const val, SysconCmd const cmd, u32 const size) {
 	return sdkSysconTransmitReceive(tx_buf, rx_buf);
 }
 
-s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx) {
-	s32 ret;
+std::int32_t sdkSysconTransmitReceive(std::uint8_t *tx, std::uint8_t *rx) {
+	std::int32_t ret;
 
 	do {
-		u8 hash = 0;
-		u32 i;
+		std::uint8_t hash = 0;
+		std::uint32_t i;
 
 		for (i = 0; i < tx[TX_LEN]; i++) {
 			hash += tx[i];
@@ -195,8 +195,8 @@ void iplSysconInit() {
 	_iplSysconGetBaryonVersion(&g_baryonVersion);
 }
 
-s32 iplSysconCtrlLED(SysconLed const led, bool const enable) {
-	u8 ledMask, setMask;
+std::int32_t iplSysconCtrlLED(SysconLed const led, bool const enable) {
+	std::uint8_t ledMask, setMask;
 	switch (led) {
 		case SysconLed::WLAN:
 			ledMask = 0x80;
@@ -214,7 +214,7 @@ s32 iplSysconCtrlLED(SysconLed const led, bool const enable) {
 
 	setMask = 0;
 	if (enable) {
-		u32 ver = (g_baryonVersion >> 16) & 0xF0;
+		std::uint32_t ver = (g_baryonVersion >> 16) & 0xF0;
 		setMask = 0x10;
 		if (ver != 0 && ver != 0x10) {
 			setMask = 1;
@@ -224,6 +224,6 @@ s32 iplSysconCtrlLED(SysconLed const led, bool const enable) {
 	return _iplSysconCommonWrite(ledMask | setMask, SysconCmd::CTRL_LED, 3);
 }
 
-s32 _iplSysconCmdNoParam(SysconCmd const cmd) {
+std::int32_t _iplSysconCmdNoParam(SysconCmd const cmd) {
 	return _iplSysconCommonWrite(0, cmd, 2);
 }

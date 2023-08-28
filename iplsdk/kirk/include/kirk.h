@@ -1,7 +1,7 @@
 #ifndef IPLSDK_KIRK
 #define IPLSDK_KIRK
 
-#include <psptypes.h>
+#include <cstdint>
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,7 +11,7 @@ extern "C" {
 		CMD1 = 1
 	};
 
-    s32 sdkKirkCmd(void *dst, u32 dsize, void *src, u32 ssize, KirkCmd cmd);
+    std::int32_t sdkKirkCmd(void *dst, std::uint32_t dsize, void *src, std::uint32_t ssize, KirkCmd cmd);
 
 #ifdef __cplusplus
 }

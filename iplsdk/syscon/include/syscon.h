@@ -1,9 +1,9 @@
 #ifndef IPLSDK_SYSCON
 #define IPLSDK_SYSCON
 
-#include <psptypes.h>
+#include <cstdint>
 
-enum class SysconCmd : u8 {
+enum class SysconCmd : std::uint8_t {
 	NOP = 0x0,
 	GET_BARYON = 0x1,
 	GET_KERNEL_DIGITAL_KEY = 0x7,
@@ -21,47 +21,47 @@ enum class SysconCmd : u8 {
 	CTRL_WLAN_POWER = 0x4D,
 };
 
-enum class SysconLed : u8 {
+enum class SysconLed : std::uint8_t {
 	MS,
 	WLAN,
 	POWER,
 	BT
 };
 
-constexpr inline u32 TX_CMD = 0;
-constexpr inline u32 TX_LEN = 1;
+constexpr inline std::uint32_t TX_CMD = 0;
+constexpr inline std::uint32_t TX_LEN = 1;
 
-constexpr u32 TX_DATA(u32 const i) { return 2 + i; };
+constexpr std::uint32_t TX_DATA(std::uint32_t const i) { return 2 + i; };
 
-constexpr inline u32 RX_STATUS = 0;
-constexpr inline u32 RX_LEN = 1;
-constexpr inline u32 RX_RESPONSE = 2;
+constexpr inline std::uint32_t RX_STATUS = 0;
+constexpr inline std::uint32_t RX_LEN = 1;
+constexpr inline std::uint32_t RX_RESPONSE = 2;
 
-constexpr u32 RX_DATA(u32 const i) { return 3 + i; };
+constexpr std::uint32_t RX_DATA(std::uint32_t const i) { return 3 + i; };
 
 void iplSysconInit();
-u32 iplSysconGetBaryonVersion();
+std::uint32_t iplSysconGetBaryonVersion();
 
-s32 sdkSysconTransmitReceive(u8 *tx, u8 *rx);
+std::int32_t sdkSysconTransmitReceive(std::uint8_t *tx, std::uint8_t *rx);
 
-s32 _iplSysconCommonRead(u32 *ptr, SysconCmd const cmd);
-s32 _iplSysconCommonWrite(u32 const val, SysconCmd const cmd, u32 const size);
+std::int32_t _iplSysconCommonRead(std::uint32_t *ptr, SysconCmd const cmd);
+std::int32_t _iplSysconCommonWrite(std::uint32_t const val, SysconCmd const cmd, std::uint32_t const size);
 
-s32 _iplSysconCmdNoParam(SysconCmd const cmd);
+std::int32_t _iplSysconCmdNoParam(SysconCmd const cmd);
 
-inline s32 iplSysconNop() {
+inline std::int32_t iplSysconNop() {
 	return _iplSysconCmdNoParam(SysconCmd::NOP);
 }
 
-inline s32 iplSysconGetWakeUpFactor(u32 *factorPtr) {
+inline std::int32_t iplSysconGetWakeUpFactor(std::uint32_t *factorPtr) {
 	return _iplSysconCommonRead(factorPtr, SysconCmd::GET_WAKE_UP_FACTOR);
 }
 
-inline s32 iplSysconCtrlHRPower(bool const enable) {
+inline std::int32_t iplSysconCtrlHRPower(bool const enable) {
 	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_HR_POWER, 3);
 }
 
-inline s32 iplSysconResetDevice(u32 reset, u32 const mode) {
+inline std::int32_t iplSysconResetDevice(std::uint32_t reset, std::uint32_t const mode) {
 	if (reset == 1) {
 		if (mode == 0 || mode == 2) {
 			reset |= 0x40;
@@ -75,21 +75,21 @@ inline s32 iplSysconResetDevice(u32 reset, u32 const mode) {
 	return _iplSysconCommonWrite(reset, SysconCmd::RESET_DEVICE, 3);
 }
 
-inline s32 iplSysconPowerStandby() {
+inline std::int32_t iplSysconPowerStandby() {
 	return _iplSysconCmdNoParam(SysconCmd::POWER_STANDBY);
 }
 
-inline s32 iplSysconPowerSuspend() {
+inline std::int32_t iplSysconPowerSuspend() {
 	return _iplSysconCmdNoParam(SysconCmd::POWER_SUSPEND);
 }
 
-s32 iplSysconCtrlLED(SysconLed const led, bool const enable);
+std::int32_t iplSysconCtrlLED(SysconLed const led, bool const enable);
 
-inline s32 iplSysconCtrlMsPower(bool const enable) {
+inline std::int32_t iplSysconCtrlMsPower(bool const enable) {
 	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_MS_POWER, 3);
 }
 
-inline s32 iplSysconCtrlWlanPower(bool const enable) {
+inline std::int32_t iplSysconCtrlWlanPower(bool const enable) {
 	return _iplSysconCommonWrite(enable, SysconCmd::CTRL_WLAN_POWER, 3);
 }
 

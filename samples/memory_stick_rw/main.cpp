@@ -5,8 +5,8 @@
 FATFS fs;
 FIL file;
 
-auto const bootrom_address = reinterpret_cast<u8 const*>(0xBFC00000);
-constexpr inline u32 bootrom_size = 0x1000;
+auto const bootrom_address = reinterpret_cast<std::uint8_t const*>(0xBFC00000);
+constexpr inline std::uint32_t bootrom_size = 0x1000;
 
 void dump_bootrom() {
 	//Initialize Memory Stick & FAT Filesystem
@@ -45,7 +45,7 @@ void dump_bootrom() {
 		return;
 	}
 
-	u32 bytes_written;
+	std::uint32_t bytes_written;
 	printf("writing file\n");
 	//Write bootrom to file
 	if (f_write(&file, bootrom_address, bootrom_size, &bytes_written) != FR_OK) {

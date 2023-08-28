@@ -2,11 +2,11 @@
 #include <serial.h>
 #include <pff.h>
 
-constexpr inline u32 buffer_size = 1024;
+constexpr inline std::uint32_t buffer_size = 1024;
 
 FATFS fs;
 
-u8 file_buffer[buffer_size];
+std::uint8_t file_buffer[buffer_size];
 
 void read_tm_config() {
 	//Initialize Memory Stick & FAT Filesystem
@@ -25,7 +25,7 @@ void read_tm_config() {
 
 	printf("File size: %d bytes\n", size);
 
-	u32 bytes_read;
+	std::uint32_t bytes_read;
 
 	if (pf_read(file_buffer, buffer_size-1, &bytes_read) != FR_OK) {
 		printf("pf_read failed!\n");

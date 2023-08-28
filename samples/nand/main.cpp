@@ -1,4 +1,4 @@
-#include <psptypes.h>
+#include <cstdint>
 
 #include <nand.h>
 #include <lowio.h>
@@ -10,23 +10,23 @@
 #define IPL_BLOCK_LIST_DUP_COUNT 0x8
 #define IPL_BLOCK_ID 0x6DC64A38
 
-u16 iplBlockListBuf[PAGE_SIZE/sizeof(u16)];
-u32 spareBuf[4];
+std::uint16_t iplBlockListBuf[PAGE_SIZE/sizeof(std::uint16_t)];
+std::uint32_t spareBuf[4];
 
 void readIplBlockList() {
-	u32 pagesPerBlock = iplNandGetPagesPerBlock();
+	std::uint32_t pagesPerBlock = iplNandGetPagesPerBlock();
 
 	for (int i = 0; i < IPL_BLOCK_LIST_DUP_COUNT; i++) {
-		u32 block = IPL_BLOCK_LIST_BLOCK + i;
-		u32 ppn = block * pagesPerBlock;
+		std::uint32_t block = IPL_BLOCK_LIST_BLOCK + i;
+		std::uint32_t ppn = block * pagesPerBlock;
 		int res = iplNandReadPage(ppn, iplBlockListBuf, spareBuf);
 
 		if (res >= 0 && spareBuf[1] == IPL_BLOCK_ID) {
 			printf("Found IPL block list at block 0x%x\n", block);
 			printf("IPL Blocks: ");
 
-			for (int j = 0; j < sizeof(iplBlockListBuf) / sizeof(u16); j++) {
-				u16 iplBlock = iplBlockListBuf[j];
+			for (int j = 0; j < sizeof(iplBlockListBuf) / sizeof(std::uint16_t); j++) {
+				std::uint16_t iplBlock = iplBlockListBuf[j];
 
 				if (!iplBlock) {
 					break;
@@ -67,7 +67,7 @@ int main()
 
 	readIplBlockList();
 
-	for (u32 i = 0; i < 5; ++i) {
+	for (std::uint32_t i = 0; i < 5; ++i) {
 		sdkWait(1 * 1000 * 1000);
 	}
 

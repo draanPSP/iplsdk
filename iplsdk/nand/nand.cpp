@@ -1,16 +1,17 @@
-#include <string.h>
+#include <cstdint>
 
+#include <string.h>
 #include <nand.h>
 #include <lowio.h>
 
 namespace
 {
-	constexpr inline u32 SUPPORTED_PAGE_SIZE = 0x200;
-	constexpr inline u32 SUPPORTED_PAGES_PER_BLOCK = 0x20;
+	constexpr inline std::uint32_t SUPPORTED_PAGE_SIZE = 0x200;
+	constexpr inline std::uint32_t SUPPORTED_PAGES_PER_BLOCK = 0x20;
 
-	constexpr inline u32 CMD_READ_STATUS = 0x70;
-	constexpr inline u32 CMD_READ_ID = 0x90;
-	constexpr inline u32 CMD_RESET = 0xFF;
+	constexpr inline std::uint32_t CMD_READ_STATUS = 0x70;
+	constexpr inline std::uint32_t CMD_READ_ID = 0x90;
+	constexpr inline std::uint32_t CMD_RESET = 0xFF;
 
 	typedef enum {
 		USER_ECC_IN_SPARE = 0x01,
@@ -19,19 +20,19 @@ namespace
 	} IplNandEccMode;
 
 	typedef struct {
-		u32 page_size;
-		u32 pages_per_block;
-		s32 total_blocks;
+		std::uint32_t page_size;
+		std::uint32_t pages_per_block;
+		std::int32_t total_blocks;
 	} __attribute__((packed)) IplNandProperties;
 
 	IplNandProperties iplNandProperties;
 
 	typedef struct {
-		u8 manufacturer_id;
-		u8 chip_id;
-		u16 page_size;
-		u16 pages_per_block;
-		u32 total_blocks;
+		std::uint8_t manufacturer_id;
+		std::uint8_t chip_id;
+		std::uint16_t page_size;
+		std::uint16_t pages_per_block;
+		std::uint32_t total_blocks;
 	} IplNandChipProperties;
 
 	const IplNandChipProperties iplNandChips[] = {
@@ -60,13 +61,13 @@ namespace
 		{0xAD, 0x39, 0x0200, 0x0020, 0x00002000},
 	};
 
-	s32 iplNandReadId(u8 *id, s32 len) {
+	std::int32_t iplNandReadId(std::uint8_t *id, std::int32_t len) {
 		memoryK1(REG_EMC_CMD) = CMD_READ_ID;
 		memoryK1(REG_EMC_ADDR) = 0x0;
 
 		if (id)
 		{
-			for (s32 i = 0; i < len; i++)
+			for (std::int32_t i = 0; i < len; i++)
 				id[i] = memoryK1(REG_EMC_DATA);
 		}
 
@@ -75,9 +76,9 @@ namespace
 		return 0;
 	}
 
-	s32 iplNandDetectChip(void) {
-		u8 id[2];
-		s32 ret;
+	std::int32_t iplNandDetectChip(void) {
+		std::uint8_t id[2];
+		std::int32_t ret;
 
 		if ((ret = iplNandReadId(id, 2)) < 0)
 			return ret;
@@ -86,7 +87,7 @@ namespace
 		iplNandProperties.pages_per_block = 0;
 		iplNandProperties.total_blocks = 0;
 
-		for (s32 i = 0; i < sizeof(iplNandChips) / sizeof(IplNandChipProperties); i++)
+		for (std::int32_t i = 0; i < sizeof(iplNandChips) / sizeof(IplNandChipProperties); i++)
 		{
 			if (id[0] == iplNandChips[i].manufacturer_id && id[1] == iplNandChips[i].chip_id)
 			{
@@ -105,11 +106,11 @@ namespace
 		return -1;
 	}
 
-	s32 iplNandIsReady(void) {
+	std::int32_t iplNandIsReady(void) {
 		return memoryK1(REG_EMC_STATUS) & 0x1;
 	}
 
-	s32 iplNandReset(void) {
+	std::int32_t iplNandReset(void) {
 		memoryK1(REG_EMC_CMD) = CMD_RESET;
 		while (!iplNandIsReady());
 		memoryK1(REG_EMC_RST) = 0x1;
@@ -117,7 +118,7 @@ namespace
 		return 0;
 	}
 
-	s32 iplNandReadAccess(u32 ppn, void *user, void *spare, u32 mode) {
+	std::int32_t iplNandReadAccess(std::uint32_t ppn, void *user, void *spare, std::uint32_t mode) {
 		while (!iplNandIsReady());
 
 		if (mode & NO_AUTO_USER_ECC)
@@ -128,7 +129,7 @@ namespace
 		memoryK1(REG_EMC_DMA_ADDR) = ppn << 10;
 		memoryK1(REG_EMC_DMA_CTRL) = 0x301;
 
-		u32 dma_ctrl;
+		std::uint32_t dma_ctrl;
 		do {
 			dma_ctrl = memoryK1(REG_EMC_DMA_CTRL);
 		} while ((dma_ctrl & 1) != 0);
@@ -137,15 +138,15 @@ namespace
 			return -1;
 
 		if (spare) {
-			u32 *spareBuf = reinterpret_cast<u32 *>(spare);
-			for (s32 i = 0; i < 0xC / 4; i++) {
+			std::uint32_t *spareBuf = reinterpret_cast<std::uint32_t *>(spare);
+			for (std::int32_t i = 0; i < 0xC / 4; i++) {
 				spareBuf[i] = memoryK1(EMC_SPARE_DATA_BUF + i * 4);
 			}
 		}
 
 		if (user) {
-			u32 *userBuf = reinterpret_cast<u32 *>(user);
-			for (s32 i = 0; i < SUPPORTED_PAGE_SIZE / 4; i++) {
+			std::uint32_t *userBuf = reinterpret_cast<std::uint32_t *>(user);
+			for (std::int32_t i = 0; i < SUPPORTED_PAGE_SIZE / 4; i++) {
 				userBuf[i] = memoryK1(EMC_USER_DATA_BUF + i * 4);
 			}
 		}
@@ -154,7 +155,7 @@ namespace
 	}
 }
 
-s32 iplNandInit(void) {
+int32_t iplNandInit(void) {
 	iplSysregEmcsmBusClockEnable();
 	iplSysregEmcsmIoEnable();
 
@@ -166,18 +167,18 @@ s32 iplNandInit(void) {
 	return -1;
 }
 
-s32 iplNandGetPageSize(void) {
+int32_t iplNandGetPageSize(void) {
 	return iplNandProperties.page_size;
 }
 
-s32 iplNandGetPagesPerBlock(void) {
+int32_t iplNandGetPagesPerBlock(void) {
 	return iplNandProperties.pages_per_block;
 }
 
-s32 iplNandGetTotalBlocks(void) {
+int32_t iplNandGetTotalBlocks(void) {
 	return iplNandProperties.total_blocks;
 }
 
-s32 iplNandReadPage(u32 ppn, void *user, void *spare) {
+int32_t iplNandReadPage(uint32_t ppn, void *user, void *spare) {
 	return iplNandReadAccess(ppn, user, spare, 0);
 }

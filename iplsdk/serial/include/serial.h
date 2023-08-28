@@ -1,19 +1,19 @@
 #ifndef IPLSDK_SERIAL
 #define IPLSDK_SERIAL
 
-#include <psptypes.h>
+#include <cstdint>
 #include "printf.h"
 
 void iplKernelUart4Init();
-u32 iplKernelUart4Suspend();
+std::uint32_t iplKernelUart4Suspend();
 void iplKernelUart4End();
 
 void sdkUartHpRemoteInit();
-u32 sdkKernelUartHpRemoteSuspend();
+std::uint32_t sdkKernelUartHpRemoteSuspend();
 void sdkKernelUartHpRemoteEnd();
 
 void sdkUartIrdaInit();
-u32 sdkKernelUartIrdaSuspend();
+std::uint32_t sdkKernelUartIrdaSuspend();
 void sdkKernelUartIrdaEnd();
 
 // Define putchar function used by printf
