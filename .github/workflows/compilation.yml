@@ -1,0 +1,25 @@
+name: CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/pspdev/pspsdk:latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Compile iplsdk samples
+      run: |
+        psp-cmake -S . -B build
+        cmake --build build
+        cmake --install build --prefix .
+
+    - name: Compress samples directory
+      run: |
+        tar -zcvf samples.tar.gz samples_bin
+
+    - name: Upload artifacts
+      if: ${{ success() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: samples-${{ github.sha }}
+        path: samples.tar.gz

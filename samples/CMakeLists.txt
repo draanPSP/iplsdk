@@ -17,3 +17,5 @@ add_subdirectory(kirk)
 add_subdirectory(memory_stick_ro)
 add_subdirectory(memory_stick_rw)
 add_subdirectory(nand)
+
+install(TARGETS flash_led controller hp_remote_serial kirk_decrypt_ipl memory_stick_ro memory_stick_rw nand_info DESTINATION samples_bin)
