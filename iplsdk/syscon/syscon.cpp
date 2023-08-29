@@ -6,7 +6,7 @@ std::uint32_t g_baryonVersion = 0;
 
 namespace {
 	std::int32_t _iplSysconPacketStart(std::uint8_t const *tx) {
-		std::uint32_t dummy;
+		std::uint32_t volatile dummy;
 
 		dummy = iplGpioPortRead();
 		iplGpioPortClear(GpioPort::SYSCON_REQUEST);

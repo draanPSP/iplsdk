@@ -77,7 +77,7 @@ constexpr std::uint32_t physicalAddr(std::uint32_t const loc) {
 }
 
 template<std::uint32_t BA>
-inline std::uint32_t &memoryRef(std::uint32_t const loc) {
+inline std::uint32_t volatile &memoryRef(std::uint32_t const loc) {
 	return *reinterpret_cast<std::uint32_t *>(BA | physicalAddr(loc));
 }
 
